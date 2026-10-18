@@ -4,23 +4,9 @@
 node_modules/
 .venv-audio/
 
-# Expo
-.expo/
+# Vite build output
 dist/
-web-build/
-expo-env.d.ts
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
+.wrangler/
 
 # debug
 npm-debug.*
@@ -36,7 +22,3 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-# generated native folders
-/ios
-/android

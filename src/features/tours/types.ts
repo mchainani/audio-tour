@@ -1,9 +1,11 @@
-/** Coordinates belong to the chapter's stop, not the listener's position. */
-export interface ChapterLocation {
+/** A named tour city or chapter stop, independent of the listener's position. */
+export interface MapLocation {
   readonly name: string;
   readonly latitude: number;
   readonly longitude: number;
 }
+
+export type ChapterLocation = MapLocation;
 
 export interface Chapter {
   readonly id: string;
@@ -20,6 +22,7 @@ export interface Tour {
   readonly id: string;
   readonly title: string;
   readonly intro: string;
+  readonly location: MapLocation;
   readonly language: string;
   readonly author?: string;
   readonly chapters: readonly Chapter[];

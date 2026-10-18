@@ -1,101 +1,123 @@
 # Audio Tour
 
-A React Native app built with Expo and TypeScript. Develop in a browser on your Mac, then run the same project on an iPhone.
+A React web app built with TypeScript and Vite. Run it in a browser on your Mac or iPhone.
 
-The app includes a responsive library, tour overview, chapter navigation, transcripts, and audio playback. It discovers every `tours/<directory>/tour.json`. San Francisco waterfront has three chapters, and New York City's Lower Manhattan tour has five, all with synthesized Ava narration. Live maps, ZIP imports, and persistent storage are upcoming stages.
+The app includes a responsive tour library with a numbered city map, tour details with numbered chapter maps, chapter navigation, transcripts, audio playback with speed controls, and interactive maps. San Francisco waterfront has three chapters; New York City's Lower Manhattan tour has five. All sample recordings use synthesized Ava narration. The public app presents tours bundled during deployment; publishing tour artifacts is handled from this repository.
 
-## Run locally
+## Run on your Mac
 
-Use Node.js 24 LTS, version 24.3 or later (see `.nvmrc`), and npm. From the project directory:
+Use Node.js 24 LTS (see `.nvmrc`) and npm:
 
 ```sh
 npm ci
-npm run web
+npm run dev
 ```
 
-Expo starts the development server, normally at **http://localhost:8081**. Open the URL printed in the terminal. Source changes refresh automatically. Stop the server with `Ctrl+C`.
+Open **http://127.0.0.1:5173**. Source changes refresh automatically. Stop the server with Ctrl+C. `npm start` and `npm run web` are aliases for the same Vite development server.
 
-Choose either tour, then select a chapter. Press Play to load its audio and listen, pause, skip 15 seconds, or seek along the timeline. Audio files are not opened or fetched while browsing the library, overview, or an unplayed chapter. The browser timeline also supports arrow keys and Home/End. Chapter navigation pauses playback and clears the previous source. Test a phone-sized layout by narrowing the browser or using its responsive design mode.
+## Test on your iPhone
 
-The current app requires no account, API key, backend, or environment variables. Tour metadata and media assets are included in the build; media is opened only on demand. Nothing is imported or saved yet, and playback position resets when a chapter is reopened.
+1. Connect your Mac and iPhone to the same Wi-Fi network.
+2. Start Vite with local-network access:
+   ```sh
+   npm run dev -- --host 0.0.0.0
+   ```
+3. Open the Network URL printed by Vite in Safari on your iPhone, such as `http://192.168.1.20:5173`. The phone needs your Mac's network address; `localhost` on the phone refers to the phone.
+4. Keep your Mac and server running during testing. Safari's Share → Add to Home Screen can save a shortcut.
+
+A deployed HTTPS site can be used in Safari without the Mac running. Offline use is not implemented. Background playback, lock-screen controls, and app handoff depend on Safari/iOS; test those on the device.
+
+## Playback and maps
+
+Open a chapter and press Play to load only its narration. Browse tours and change speed without fetching audio. Controls include play/pause, replay, ±15 seconds, a seek timeline, elapsed time, and duration. Keyboard seeking supports arrows, PageUp/PageDown, and Home/End.
+
+Speed options are **0.75×, 1×, 1.25×, 1.5×, and 2×**, with pitch correction. Speed defaults to 1× and stays selected across chapters until the page reloads. Leaving a chapter stops playback, clears the source, and resets its position. Transcripts remain readable during media errors, and Retry reloads the audio.
+
+Leaflet/OpenStreetMap previews each chapter's stored coordinates. Tiles require internet access, but coordinates and the **Open in Maps** link remain available if the preview fails. Desktop opens Google Maps in a new tab. iPhone browsers offer Apple Maps or Google Maps; iOS decides whether a web link opens an installed app or its website. No location permission or API key is needed.
+
+See [audio behavior](docs/audio-playback.md) and [map behavior](docs/maps-and-speed.md).
 
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `npm run web` | Develop in a local Mac browser |
-| `npm start` | Start Expo and choose a platform |
-| `npm run ios` | Open the app in the iOS simulator; requires Xcode and an installed simulator runtime |
-| `npm run android` | Open the app in an Android emulator; requires Android tooling |
-| `npm run typecheck` | Check TypeScript types |
-| `npm run lint` | Run Expo's ESLint configuration |
-| `npm test` | Test directory catalog validation and on-demand audio resolution |
-| `npm run build:web` | Export a production web build into `dist/` |
+| `npm run dev` / `npm start` / `npm run web` | Start Vite on port 5173 |
+| `npm run build` / `npm run build:web` | Type-check and build the static site in `dist/` |
+| `npm run preview` | Serve the production build at http://127.0.0.1:4173 |
+| `npm run typecheck` | Check TypeScript |
+| `npm run lint` | Run ESLint |
+| `npm test` | Test browser playback lifecycle, catalog validation, Vite discovery, and map links |
 | `npm run generate:audio` | Regenerate narration and a ZIP for every tour on macOS |
 | `npm run generate:audio -- new-york-city` | Regenerate only the New York tour |
-| `npx expo install --check` | Check dependency compatibility with the installed Expo SDK |
-
-The web export is a single-page app. When hosting it, rewrite non-asset routes to `index.html` so direct tour/chapter links work. The Expo development server already handles this.
 
 ## Project structure
 
 ```text
-app/
-  _layout.tsx                         Root navigation and shared audio session
-  index.tsx                          Tour library
-  tours/[tourId]/index.tsx            Tour overview
-  tours/[tourId]/chapters/[chapterId].tsx
-  +not-found.tsx                      Unknown-route screen
+index.html                         Browser entry
+vite.config.ts                     Build configuration
 src/
-  components/                        Shared page layout and presentation
-  features/tours/types.ts             Readonly version 1 tour schema
-  features/tours/catalog.ts           Directory discovery and deferred media resolution
-  features/tours/tour-library.ts      Manifest validation and chapter media lookup
-  features/audio/                     Playback and platform seek controls
-  theme.ts                           Shared colors and typography
+  main.tsx                         React root, router, shared audio session
+  app.tsx                          Library, tour, chapter, and missing-page routes
+  styles.css                       Responsive HTML/CSS presentation
+  pages/                           Library, tour overview, chapter
+  components/                      Page shell and shared UI
+  features/audio/                  HTML audio controller and accessible controls
+  features/maps/                   Leaflet preview and external maps chooser
+  features/tours/                  Manifest discovery, validation, and media lookup
 tours/
   san-francisco-waterfront/
-    tour.json                        Manifest and chapter transcripts
-    audio/                           Three narrated M4A files
-    san-francisco-waterfront.zip      Portable package for future import
+    tour.json
+    audio/
+    san-francisco-waterfront.zip
   new-york-city/
-    tour.json                        Five Lower Manhattan chapters
-    audio/                           Five narrated M4A files
-    new-york-city.zip                 Portable package for future import
-scripts/
-  generate-tour-audio.mjs             Cloud neural speech and macOS AAC conversion
-  requirements-audio.txt             Pinned Python speech client
-docs/
-  tour-format.md                     Manifest example and field definitions
-  audio-playback.md                  Playback behavior and verification
-  superpowers/specs/                  Approved design and stage boundaries
-  superpowers/plans/                  Scaffolding checklist
+    tour.json
+    audio/
+    new-york-city.zip
+tests/                             Node unit tests and Vite catalog integration
+scripts/                           Existing narration generator
+docs/                              Tour schema and playback/maps notes
 ```
-
-## iPhone, later
-
-The project includes iOS configuration and uses React Native components throughout. For an early device preview, run `npm start`, use Expo Go on the same network, and scan the development QR code, provided the installed Expo Go release supports this project's SDK. The iOS simulator is another option.
-
-Use an iOS development build to test the configured native silent-switch playback, background audio, and lock-screen controls. These require device validation; browser verification does not establish native behavior. App signing and distribution will be configured at that stage; the current bundle identifier is a development placeholder.
 
 ## Add a tour
 
-Create a direct subdirectory of `tours/` with a version 1 `tour.json` and the audio files referenced by its chapters under `audio/`:
+Create a direct subdirectory of `tours/`:
 
 ```text
 tours/your-tour/tour.json
 tours/your-tour/audio/first-stop.m4a
 ```
 
-Use a unique tour ID and unique chapter IDs, with safe package-relative audio paths. The catalog validates metadata, coordinates, duplicate IDs, and missing audio. Errors identify the manifest to fix. M4A, MP3, and WAV files are supported by the catalog; the narration generator produces M4A. The library is sorted by title, with chapter order taken from each manifest.
+Use the [version 1 schema](docs/tour-format.md), unique tour/chapter IDs, and safe relative audio paths. The catalog validates metadata, coordinates, duplicate IDs, and missing audio. Errors identify the manifest to fix. M4A, MP3, and WAV are supported.
 
-Expo's Metro directory contexts discover folders automatically during development. Refresh if needed after adding a complete tour; no code registry needs updating. Published web and native apps need a new build to include source-directory changes. Browsers and iPhones do not read arbitrary Mac filesystem directories at runtime. Native app installations include the assets, but the player opens only the selected chapter after Play.
+Vite discovers manifests automatically, without a manual registry. Refresh after adding a complete tour. Published sites need a rebuild to include source-directory changes; browsers do not read arbitrary Mac directories at runtime. Media files are emitted as separate assets and fetched only on Play/Retry. ZIP import and persistent tour storage are not implemented.
+
+## Build and host
+
+```sh
+npm run build
+npm run preview
+```
+
+Deploy `dist/` to a static host at the site root. Configure a single-page-app fallback: non-asset paths such as `/tours/new-york-city/chapters/the-battery` must serve `index.html`. Vite's development and preview servers already do this. Serve audio files with their proper media content types; byte-range support is recommended for seeking. Use HTTPS for a public deployment.
+
+### Cloudflare Pages
+
+Production: **https://audio-tour.pages.dev/**. Open this HTTPS URL directly on your iPhone; the Mac does not need to remain running.
+
+From the project root, with Cloudflare authenticated, publish the current source:
+
+```sh
+npm run build
+npx --yes wrangler@4.151.1 pages deploy dist --project-name audio-tour --branch main --commit-dirty=true
+```
+
+The Pages project uses `main` as its production deployment branch. Wrangler also bundles the `functions/` directory. Its audio handler supplies byte-range responses for seeking because the static Pages origin returned complete recordings for range requests. Keep `functions/` and `server/audio-ranges.mjs` alongside the app when redeploying. Pages serves the React entry point for direct tour/chapter URLs.
 
 ## Tour narration
 
-[San Francisco waterfront ZIP](tours/san-francisco-waterfront/san-francisco-waterfront.zip) and [New York City ZIP](tours/new-york-city/new-york-city.zip) contain `tour.json` and their AAC/M4A files, generated from the original chapter transcripts using Microsoft's online **Ava** neural voice (`en-US-AvaNeural`), an American female voice. Each ZIP sits inside its tour directory. The app uses the unpacked files. ZIP import is not yet available in the app.
+Each tour directory contains its manifest, M4A recordings, and a ZIP package. Each ZIP contains its tour's manifest and recordings; the app reads the unpacked source files.
 
-To regenerate on a Mac, install the speech client once, then run:
+To regenerate on a Mac:
 
 ```sh
 python3 -m venv .venv-audio
@@ -103,16 +125,4 @@ python3 -m venv .venv-audio
 npm run generate:audio
 ```
 
-Generation sends chapter transcripts to Microsoft's online speech service through the third-party `edge-tts` client. It requires internet access, with no API key. The default rate is `-5%` for a slightly relaxed delivery. Optional overrides: `NARRATION_VOICE`, `NARRATION_RATE` (a signed percentage), and `NARRATION_PYTHON` (another Python interpreter with the client installed). Only AAC conversion and ZIP packaging use macOS tools (`afconvert` and `zip`); system speech voices are no longer used. Normal app playback uses the bundled files and makes no speech-service requests. See the [sample notes](tours/san-francisco-waterfront/README.md).
-
-## Next stages
-
-1. Validate and import ZIP packages, with persistent browser/iPhone storage.
-2. Connect web/native maps.
-3. Verify the native experience on an iPhone.
-
-See [the approved design](docs/superpowers/specs/2026-10-18-audio-tour-design.md) and [tour format](docs/tour-format.md).
-
-## Dependency audit
-
-On 2026-10-18, `npm audit` reports 26 advisories (19 high, 7 moderate) in the Expo/React Native dependency tree, originating from `braces`, `node-forge`, and `uuid`. Compatible fixes were applied; the reported remaining fix requires downgrading to Expo 44 and would break this SDK 58 scaffold. Keep the development server local and recheck upstream dependency updates before deployment.
+Generation sends chapter transcripts to Microsoft's online speech service through the third-party `edge-tts` client, using **Ava** (`en-US-AvaNeural`, American female) at `-5%`. It requires internet access. Only AAC conversion and ZIP packaging use macOS tools. Normal playback uses the existing files and makes no speech-service request. Overrides: `NARRATION_VOICE`, `NARRATION_RATE`, and `NARRATION_PYTHON`.

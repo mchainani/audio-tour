@@ -1,0 +1,13 @@
+.chapter-map-frame { position: relative; height: 250px; border-radius: 12px; overflow: hidden; background: #e9eedf; isolation: isolate; }
+.chapter-map-canvas { width: 100%; height: 100%; }
+.chapter-map-status { position: absolute; z-index: 1000; left: 12px; right: 12px; bottom: 28px; padding: 10px; border-radius: 8px; background: #fff; color: #465a4c; font: 12px/1.5 system-ui, sans-serif; box-shadow: 0 1px 8px #20392f22; }
+.chapter-map-status button { display: block; margin-top: 6px; min-height: 44px; padding: 6px 12px; border: 1px solid #dfe5dc; border-radius: 6px; color: #244f3d; background: #fff; cursor: pointer; }
+.chapter-map-marker { background: transparent; border: 0; }
+.chapter-map-marker span { display: block; width: 25px; height: 25px; margin: 1px; background: #244f3d; border: 3px solid #fff; box-sizing: border-box; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 2px 5px #20392f66; }
+.chapter-map-canvas .leaflet-control-attribution { font-size: 10px; }
+.chapter-map-canvas .leaflet-control-zoom a { color: #244f3d; }
+.tour-map-frame { height: 360px; }
+.tour-map-marker { background: transparent; border: 0; }
+.tour-map-marker > span { position: relative; display: grid; place-items: center; width: 34px; height: 34px; margin: 2px; border: 3px solid #fff; border-radius: 50%; background: #244f3d; color: #fff; font: 700 14px/1 system-ui, sans-serif; box-shadow: 0 2px 5px #20392f66; }
+.tour-map-marker > span::after { content: ''; position: absolute; left: 8px; bottom: -9px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid #244f3d; }
+@media (max-width: 759px) { .tour-map-frame { height: 300px; } }

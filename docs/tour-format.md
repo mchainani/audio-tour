@@ -17,6 +17,11 @@ The app discovers `tours/<directory>/tour.json` and validates its manifest and r
   "id": "san-francisco-waterfront",
   "title": "San Francisco waterfront",
   "intro": "Explore the stories along the edge of the bay.",
+  "location": {
+    "name": "San Francisco",
+    "latitude": 37.7749,
+    "longitude": -122.4194
+  },
   "language": "en-US",
   "author": "Audio Tour",
   "chapters": [
@@ -40,6 +45,9 @@ The app discovers `tours/<directory>/tour.json` and validates its manifest and r
 | `schemaVersion` | Exactly `1` |
 | `id` | Stable, nonempty tour identifier; unique in a library |
 | `title`, `intro` | Nonempty plain text |
+| `location.name` | Nonempty city or area name shown in the library |
+| `location.latitude` | Tour city/area latitude in decimal degrees, from -90 to 90 |
+| `location.longitude` | Tour city/area longitude in decimal degrees, from -180 to 180 |
 | `language` | Language tag, such as `en-US` |
 | `author` | Optional plain text |
 | `chapters` | Nonempty array; array order is chapter order |
@@ -51,4 +59,6 @@ The app discovers `tours/<directory>/tour.json` and validates its manifest and r
 | `chapters[].transcript` | Nonempty plain text; separate paragraphs with `\n\n` |
 | `chapters[].audio` | Package-relative audio path, with no absolute path or parent traversal |
 
-The directory catalog validates schema version, required text, unique IDs, coordinates, safe audio paths, and file presence. IDs use lowercase letters, digits, and hyphens. It accepts M4A, MP3, and WAV paths; current narration uses mono AAC at 44.1 kHz in M4A containers. The future importer will validate uploaded ZIPs separately and define package size limits.
+The required top-level `location` places the tour on the library map; chapter `location` fields place individual stops on the tour map. Both use a name and finite coordinates. Existing manifests need this top-level field before they can be published. Library map pins and cards share the catalog's alphabetical tour ordering, numbered from 1.
+
+The directory catalog validates schema version, required text, unique IDs, coordinates, safe audio paths, and file presence. IDs use lowercase letters, digits, and hyphens. It accepts M4A, MP3, and WAV paths; current narration uses mono AAC at 44.1 kHz in M4A containers. The public app has no upload/import interface; tour artifacts are published from the repository.

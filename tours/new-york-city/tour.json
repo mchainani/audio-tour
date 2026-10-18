@@ -3,6 +3,11 @@
   "id": "new-york-city",
   "title": "New York City: Lower Manhattan",
   "intro": "Discover the city from the harbor to the Brooklyn Bridge. Five stops in Lower Manhattan connect waterfront views, small green spaces, and the streets where New York's history comes into focus.",
+  "location": {
+    "name": "New York City",
+    "latitude": 40.7128,
+    "longitude": -74.006
+  },
   "language": "en-US",
   "author": "Audio Tour",
   "chapters": [

@@ -1,4 +1,4 @@
-import type { Tour } from './types';
+import type { MapLocation, Tour } from './types';
 
 export interface TourManifestEntry {
   readonly directory: string;
@@ -11,6 +11,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isText(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
+}
+
+function isLocation(value: unknown): value is MapLocation {
+  return isRecord(value) && isText(value.name)
+    && typeof value.latitude === 'number' && Number.isFinite(value.latitude) && Math.abs(value.latitude) <= 90
+    && typeof value.longitude === 'number' && Number.isFinite(value.longitude) && Math.abs(value.longitude) <= 180;
 }
 
 function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<string>): asserts value is Tour {
@@ -32,6 +38,9 @@ function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<
   if (value.author !== undefined && !isText(value.author)) {
     invalid('author must be nonempty text when provided.');
   }
+  if (!isLocation(value.location)) {
+    invalid('Tour needs a location name and valid coordinates.');
+  }
   if (!Array.isArray(value.chapters) || value.chapters.length === 0) {
     invalid('Expected at least one chapter.');
   }
@@ -48,10 +57,7 @@ function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<
     if (!isText(chapter.title) || !isText(chapter.transcript)) {
       invalid(`Chapter ${chapter.id} needs a title and transcript.`);
     }
-    const location = chapter.location;
-    if (!isRecord(location) || !isText(location.name)
-      || typeof location.latitude !== 'number' || !Number.isFinite(location.latitude) || Math.abs(location.latitude) > 90
-      || typeof location.longitude !== 'number' || !Number.isFinite(location.longitude) || Math.abs(location.longitude) > 180) {
+    if (!isLocation(chapter.location)) {
       invalid(`Chapter ${chapter.id} needs a location name and valid coordinates.`);
     }
     if (!isText(chapter.audio) || !/^audio\/(?:[a-z0-9_-]+\/)*[a-z0-9_-]+\.(m4a|mp3|wav)$/i.test(chapter.audio)) {

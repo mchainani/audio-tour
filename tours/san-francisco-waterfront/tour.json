@@ -3,6 +3,11 @@
   "id": "san-francisco-waterfront",
   "title": "San Francisco waterfront",
   "intro": "Follow the edge of the bay, from the Ferry Building’s clock tower to the piers along the Embarcadero. Three stops offer a first look at a city shaped by the water.",
+  "location": {
+    "name": "San Francisco",
+    "latitude": 37.7749,
+    "longitude": -122.4194
+  },
   "language": "en-US",
   "author": "Audio Tour",
   "chapters": [

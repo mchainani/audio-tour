@@ -1,15 +1,14 @@
-import type { AudioSource } from 'expo-audio';
-
 import { createTourLibrary } from './tour-library';
 
-// Metro updates these contexts when tour folders or their files change.
-const manifests = require.context('../../../tours', true, /^\.\/[^/]+\/tour\.json$/);
-const audio = require.context('../../../tours', true, /^\.\/[^/]+\/audio\/.+\.(m4a|mp3|wav)$/i);
-
+// Vite discovers every direct tour directory. URL imports do not fetch media bytes.
+const manifests = import.meta.glob<unknown>('../../../tours/*/tour.json', { eager: true, import: 'default' });
+const audio = import.meta.glob<string>('../../../tours/*/audio/**/*', { eager: true, query: '?url', import: 'default' });
+const keyFor = (path: string) => path.replace('../../../tours/', './');
+const media = new Map(Object.entries(audio).filter(([path]) => /\.(m4a|mp3|wav)$/i.test(path)).map(([path, url]) => [keyFor(path), url]));
 const library = createTourLibrary(
-  manifests.keys().map((key) => ({ directory: key.split('/')[1], manifest: manifests<unknown>(key) })),
-  audio.keys(),
-  (key) => audio<AudioSource>(key),
+  Object.entries(manifests).map(([path, manifest]) => ({ directory: keyFor(path).split('/')[1], manifest })),
+  [...media.keys()],
+  (key) => media.get(key) ?? null,
 );
 
 export const tours = library.tours;

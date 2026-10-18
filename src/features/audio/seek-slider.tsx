@@ -1,21 +1,27 @@
-import Slider from '@react-native-community/slider';
+interface SeekSliderProps {
+  readonly value: number;
+  readonly maximumValue: number;
+  readonly disabled: boolean;
+  readonly valueText: string;
+  readonly onSeek: (value: number) => void;
+}
 
-import { colors } from '@/theme';
-
-import type { SeekSliderProps } from './seek-slider.types';
-
-export function SeekSlider({ valueText, ...props }: SeekSliderProps) {
-  return (
-    <Slider
-      {...props}
-      accessibilityLabel="Narration position"
-      accessibilityValue={{ min: 0, max: props.maximumValue, now: props.value, text: valueText }}
-      minimumValue={0}
-      minimumTrackTintColor={colors.green}
-      maximumTrackTintColor={colors.border}
-      thumbTintColor={colors.green}
-      tapToSeek
-      style={{ width: '100%', height: 32 }}
-    />
-  );
+/** A browser range input with explicit, predictable seek increments. */
+export function SeekSlider({ value, maximumValue, disabled, valueText, onSeek }: SeekSliderProps) {
+  return <input type="range" className="seek-slider" aria-label="Narration position" aria-valuetext={valueText} min={0} max={maximumValue} step="any" value={value} disabled={disabled}
+    onChange={(event) => onSeek(event.currentTarget.valueAsNumber)}
+    onKeyDown={(event) => {
+      let next: number;
+      switch (event.key) {
+        case 'ArrowRight': case 'ArrowUp': next = value + 1; break;
+        case 'ArrowLeft': case 'ArrowDown': next = value - 1; break;
+        case 'PageUp': next = value + 10; break;
+        case 'PageDown': next = value - 10; break;
+        case 'Home': next = 0; break;
+        case 'End': next = maximumValue; break;
+        default: return;
+      }
+      event.preventDefault();
+      onSeek(Math.max(0, Math.min(maximumValue, next)));
+    }} />;
 }

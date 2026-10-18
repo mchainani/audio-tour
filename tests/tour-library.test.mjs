@@ -46,6 +46,33 @@ test('uses the manifest directory even when it differs from the tour ID', () => 
   assert.equal(library.loadAudio(entry.manifest.id, entry.manifest.chapters[0].audio), keys[0]);
 });
 
+test('rejects missing or invalid tour city locations with the manifest path', () => {
+  const valid = { name: 'San Francisco', latitude: 37.7749, longitude: -122.4194 };
+  for (const location of [
+    undefined, null, {},
+    { ...valid, name: ' ' },
+    { ...valid, latitude: 91 },
+    { ...valid, latitude: NaN },
+    { ...valid, longitude: -181 },
+    { ...valid, longitude: Infinity },
+    { ...valid, latitude: '37.7749' },
+  ]) {
+    const entry = structuredClone(entries[0]);
+    entry.manifest.location = location;
+    assert.throws(() => createTourLibrary([entry], audioKeys, () => 123),
+      new RegExp(`tours/${entry.directory}/tour.json: Tour needs a location name and valid coordinates`));
+  }
+});
+
+test('retains tour city metadata without resolving chapter audio and accepts coordinate bounds', () => {
+  for (const [latitude, longitude] of [[0, 0], [-90, -180], [90, 180]]) {
+    const entry = structuredClone(entries[0]);
+    entry.manifest.location = { name: 'Tour city', latitude, longitude };
+    const library = createTourLibrary([entry], audioKeys, () => assert.fail('City metadata must not resolve narration'));
+    assert.deepEqual(library.tours[0].location, entry.manifest.location);
+  }
+});
+
 test('rejects duplicate tour and chapter IDs', () => {
   assert.throws(() => createTourLibrary([entries[0], entries[0]], audioKeys, () => 123), /duplicate tour/i);
   const entry = structuredClone(entries[0]);
