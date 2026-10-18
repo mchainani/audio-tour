@@ -9,7 +9,7 @@ waterfront.zip
     ferry-building.m4a
 ```
 
-The scaffold defines the types and includes preview metadata. **Package import, runtime validation, and actual audio assets are not implemented yet.** The following manifest illustrates the contract; it is not a complete downloadable audio package.
+The app defines the types and bundles a complete [San Francisco demo package](../samples/san-francisco-waterfront.zip) with playable narration. **Package import and runtime validation are not implemented yet.** The following abbreviated manifest illustrates the contract; the full demo has three chapters.
 
 ```json
 {
@@ -51,4 +51,4 @@ The scaffold defines the types and includes preview metadata. **Package import, 
 | `chapters[].transcript` | Nonempty plain text; separate paragraphs with `\n\n` |
 | `chapters[].audio` | Package-relative audio path, with no absolute path or parent traversal |
 
-The importer will enforce this contract at runtime before accepting a package. TypeScript types alone do not validate uploaded JSON. Supported audio formats and package size limits will be fixed when the importer and playback implementation are added.
+The importer will enforce this contract at runtime before accepting a package. TypeScript types alone do not validate uploaded JSON. Bundled demo audio uses mono AAC at 44.1 kHz in M4A containers. The accepted import formats and package size limits will be fixed when the importer is added.

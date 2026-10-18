@@ -1,6 +1,6 @@
 # Audio tour app — proposed design
 
-Status: initial design approved on 2026-10-18. The current implementation scope is the initial Expo scaffolding: browser development, navigation, tour types, and preview screens. Imports, persistent storage, audio playback, live maps, and narrated sample packages remain subsequent stages.
+Status: initial design approved on 2026-10-18. Expo scaffolding, browser navigation, tour types, chapter audio playback, and the narrated San Francisco sample are implemented. The user requested audio and San Francisco narration as the next increment. Imports, persistent storage, live maps, the Golden Gate Park sample, and native device verification remain subsequent stages.
 
 ## Goal
 

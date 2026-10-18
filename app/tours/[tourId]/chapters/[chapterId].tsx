@@ -3,7 +3,9 @@ import { Link, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
-import { BackLink, Badge, Eyebrow, MissingContent } from '@/components/ui';
+import { BackLink, Eyebrow, MissingContent } from '@/components/ui';
+import { ChapterPlayer } from '@/features/audio/chapter-player';
+import { getBundledAudio } from '@/features/tours/bundled-audio';
 import { previewTours } from '@/features/tours/preview-tours';
 import { colors, typography } from '@/theme';
 
@@ -33,16 +35,12 @@ export default function ChapterScreen() {
         </View>
       </View>
 
-      <View style={styles.audioPreview}>
-        <View style={styles.audioIcon}>
-          <Ionicons name="headset-outline" size={27} color={colors.green} />
-        </View>
-        <View style={styles.audioText}>
-          <Text style={styles.audioTitle}>The story will start here.</Text>
-          <Text style={styles.audioDescription}>Audio playback will be connected next.</Text>
-        </View>
-        <Badge>COMING NEXT</Badge>
-      </View>
+      <ChapterPlayer
+        key={`${tour.id}/${chapter.id}`}
+        source={getBundledAudio(tour.id, chapter.audio)}
+        title={chapter.title}
+        tourTitle={tour.title}
+      />
 
       <View style={[styles.columns, width >= 800 && styles.columnsWide]}>
         <View style={styles.transcript}>
@@ -94,11 +92,6 @@ const styles = StyleSheet.create({
   title: { fontFamily: typography.heading, fontSize: 41, lineHeight: 48, letterSpacing: -1.2, color: colors.ink },
   locationLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   locationText: { color: colors.muted, fontSize: 13, lineHeight: 20, flexShrink: 1 },
-  audioPreview: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 17, padding: 22, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, borderRadius: 17 },
-  audioIcon: { width: 52, height: 52, backgroundColor: colors.sage, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
-  audioText: { flex: 1, minWidth: 150, gap: 7 },
-  audioTitle: { color: colors.ink, fontWeight: '600', fontSize: 15, lineHeight: 22 },
-  audioDescription: { color: colors.muted, fontSize: 12, lineHeight: 19 },
   columns: { gap: 30, marginTop: 8 },
   columnsWide: { flexDirection: 'row', alignItems: 'flex-start', gap: 48 },
   transcript: { flex: 1, gap: 22 },

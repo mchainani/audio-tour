@@ -2,7 +2,7 @@
 
 A React Native app built with Expo and TypeScript. Develop in a browser on your Mac, then run the same project on an iPhone.
 
-This is the **initial scaffold**, with a responsive library, tour overview, chapter navigation, transcript preview, and version 1 tour types. The bundled waterfront tour is read-only preview data. Audio playback, live maps, ZIP imports, persistent storage, and narrated sample packages are the next stage.
+The app includes a responsive library, tour overview, chapter navigation, transcripts, and audio playback. The bundled San Francisco waterfront tour has three chapters with synthesized demo narration. Live maps, ZIP imports, and persistent storage are upcoming stages.
 
 ## Run locally
 
@@ -15,9 +15,9 @@ npm run web
 
 Expo starts the development server, normally at **http://localhost:8081**. Open the URL printed in the terminal. Source changes refresh automatically. Stop the server with `Ctrl+C`.
 
-Select **San Francisco waterfront**, then choose a chapter to preview its transcript and location coordinates. Test a phone-sized layout by narrowing the browser or using its responsive design mode.
+Select **San Francisco waterfront**, then choose a chapter. Press Play to listen, pause, skip 15 seconds, or seek along the timeline. The browser timeline also supports arrow keys and Home/End. Chapter navigation pauses playback; chapters never autoplay. Test a phone-sized layout by narrowing the browser or using its responsive design mode.
 
-The current app requires no account, API key, backend, or environment variables. Only development preview data is bundled; nothing is imported or saved yet.
+The current app requires no account, API key, backend, or environment variables. The demo tour is bundled; nothing is imported or saved yet, and playback position resets when a chapter is reopened.
 
 ## Commands
 
@@ -30,6 +30,7 @@ The current app requires no account, API key, backend, or environment variables.
 | `npm run typecheck` | Check TypeScript types |
 | `npm run lint` | Run Expo's ESLint configuration |
 | `npm run build:web` | Export a production web build into `dist/` |
+| `npm run generate:audio` | Regenerate San Francisco narration and its ZIP on macOS |
 | `npx expo install --check` | Check dependency compatibility with the installed Expo SDK |
 
 The web export is a single-page app. When hosting it, rewrite non-asset routes to `index.html` so direct tour/chapter links work. The Expo development server already handles this.
@@ -38,7 +39,7 @@ The web export is a single-page app. When hosting it, rewrite non-asset routes t
 
 ```text
 app/
-  _layout.tsx                         Root navigation and status bar
+  _layout.tsx                         Root navigation and shared audio session
   index.tsx                          Tour library
   tours/[tourId]/index.tsx            Tour overview
   tours/[tourId]/chapters/[chapterId].tsx
@@ -46,10 +47,18 @@ app/
 src/
   components/                        Shared page layout and presentation
   features/tours/types.ts             Readonly version 1 tour schema
-  features/tours/preview-tours.ts      Bundled navigation fixture, without audio assets
+  features/tours/preview-tours.ts      Bundled demo manifest
+  features/tours/bundled-audio.ts      Static Metro audio asset resolution
+  features/audio/                     Playback and platform seek controls
   theme.ts                           Shared colors and typography
+samples/
+  san-francisco-waterfront/           Manifest and three narrated M4A files
+  san-francisco-waterfront.zip        Portable tour package for future import
+scripts/
+  generate-tour-audio.mjs             Repeatable macOS speech/AAC generation
 docs/
   tour-format.md                     Manifest example and field definitions
+  audio-playback.md                  Playback behavior and verification
   superpowers/specs/                  Approved design and stage boundaries
   superpowers/plans/                  Scaffolding checklist
 ```
@@ -58,13 +67,19 @@ docs/
 
 The project includes iOS configuration and uses React Native components throughout. For an early device preview, run `npm start`, use Expo Go on the same network, and scan the development QR code, provided the installed Expo Go release supports this project's SDK. The iOS simulator is another option.
 
-Use an iOS development build for testing native configuration and background audio when those features are added. Browser verification does not verify native imports, file storage, maps, or lock-screen behavior. App signing and distribution will be configured at that stage; the current bundle identifier is a development placeholder.
+Use an iOS development build to test the configured native silent-switch playback, background audio, and lock-screen controls. These require device validation; browser verification does not establish native behavior. App signing and distribution will be configured at that stage; the current bundle identifier is a development placeholder.
+
+## Sample narration
+
+[San Francisco waterfront ZIP](samples/san-francisco-waterfront.zip) contains `tour.json` and three AAC/M4A files, generated from the original chapter transcripts using the macOS Samantha voice. The app bundles these same files. ZIP import is not yet available in the app.
+
+Run `npm run generate:audio` on a Mac after editing the manifest transcripts. Optional overrides: `NARRATION_VOICE` and `NARRATION_RATE` (default 155 words/minute). Generation uses the system `say`, `afconvert`, and `zip` tools; no external speech service or key is needed. See the [sample notes](samples/san-francisco-waterfront/README.md).
 
 ## Next stages
 
 1. Validate and import ZIP packages, with persistent browser/iPhone storage.
-2. Connect chapter audio playback and web/native maps.
-3. Generate two original sample tour packages with narrated audio.
+2. Connect web/native maps.
+3. Add the Golden Gate Park sample tour and verify sample package imports.
 4. Verify the native experience on an iPhone.
 
 See [the approved design](docs/superpowers/specs/2026-10-18-audio-tour-design.md) and [tour format](docs/tour-format.md).

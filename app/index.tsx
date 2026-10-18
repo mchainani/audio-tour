@@ -47,7 +47,7 @@ export default function LibraryScreen() {
           <Text role="heading" aria-level={2} style={styles.sectionTitle}>Your tours</Text>
           <Text style={styles.sectionDescription}>Start with a little inspiration.</Text>
         </View>
-        <Badge>{previewTours.length} preview tour</Badge>
+        <Badge>{previewTours.length} demo tour</Badge>
       </View>
 
       <View style={[styles.libraryGrid, wide && styles.libraryGridWide]}>
@@ -59,7 +59,7 @@ export default function LibraryScreen() {
                   <View style={styles.tourIcon}>
                     <Ionicons name="boat-outline" size={30} color={colors.green} />
                   </View>
-                  <Badge>PREVIEW</Badge>
+                  <Badge>WITH AUDIO</Badge>
                 </View>
                 <Eyebrow>SAN FRANCISCO, CALIFORNIA</Eyebrow>
                 <Text role="heading" aria-level={3} style={styles.tourTitle}>{tour.title}</Text>
@@ -93,7 +93,7 @@ export default function LibraryScreen() {
       <View style={styles.previewNote}>
         <Ionicons name="information-circle-outline" size={18} color={colors.muted} />
         <Text style={styles.previewNoteText}>
-          You’re exploring the app’s first build. Tour navigation and transcripts are ready to preview; audio, live maps, and imports come next.
+          Try the San Francisco tour with synthesized demo narration and full transcripts. Live maps and tour imports come next.
         </Text>
       </View>
     </Screen>

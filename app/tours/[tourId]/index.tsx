@@ -19,7 +19,7 @@ export default function TourScreen() {
     <Screen>
       <BackLink href="/">Your tours</BackLink>
       <View style={styles.introduction}>
-        <Badge>PREVIEW TOUR</Badge>
+        <Badge>DEMO TOUR · WITH AUDIO</Badge>
         <Text role="heading" aria-level={1} style={styles.title}>{tour.title}</Text>
         <Text style={styles.intro}>{tour.intro}</Text>
         <Text style={styles.metadata}>{tour.chapters.length} chapters · {tour.language}{tour.author ? ` · By ${tour.author}` : ''}</Text>
@@ -45,7 +45,7 @@ export default function TourScreen() {
           </Link>
         ))}
       </View>
-      <Text style={styles.note}>This tour previews the app’s structure. Narration, live maps, and tour imports will be connected in the next stage.</Text>
+      <Text style={styles.note}>Each chapter includes synthesized demo narration and a transcript. Live maps and tour imports are coming next.</Text>
     </Screen>
   );
 }
