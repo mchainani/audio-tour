@@ -1,0 +1,52 @@
+import type { Tour } from './types';
+
+/** Navigation fixture only. No audio assets or imported tours are bundled yet. */
+export const previewTours: readonly Tour[] = [
+  {
+    schemaVersion: 1,
+    id: 'san-francisco-waterfront',
+    title: 'San Francisco waterfront',
+    intro:
+      'Follow the edge of the bay, from the Ferry Building’s clock tower to the piers along the Embarcadero. Three stops offer a first look at a city shaped by the water.',
+    language: 'en-US',
+    author: 'Audio Tour',
+    chapters: [
+      {
+        id: 'ferry-building',
+        title: 'Where the city meets the bay',
+        location: {
+          name: 'Ferry Building',
+          latitude: 37.7955,
+          longitude: -122.3937,
+        },
+        transcript:
+          'Begin by looking up at the Ferry Building’s clock tower. Opened in 1898, this waterfront landmark welcomed travelers arriving across the bay.\n\nToday, the Embarcadero connects the building to the piers stretching north along the shoreline. Take a moment to notice the ferries, the changing light on the water, and the pace of the city behind you.',
+        audio: 'audio/ferry-building.m4a',
+      },
+      {
+        id: 'pier-seven',
+        title: 'A different perspective',
+        location: {
+          name: 'Pier 7',
+          latitude: 37.7984,
+          longitude: -122.3947,
+        },
+        transcript:
+          'At Pier 7, the city opens out toward the water. The long walkway creates a simple invitation: pause and look around.\n\nNotice how the skyline changes as you turn back toward the shore. The bay is part of the city’s everyday life, as much a place of movement as a place to stop.',
+        audio: 'audio/pier-seven.m4a',
+      },
+      {
+        id: 'exploratorium',
+        title: 'Stay curious',
+        location: {
+          name: 'Exploratorium, Pier 15',
+          latitude: 37.8009,
+          longitude: -122.3984,
+        },
+        transcript:
+          'Our final stop is outside the Exploratorium at Pier 15. The museum is devoted to exploring science, art, and human perception.\n\nYou can bring that same curiosity to the waterfront. Watch a wave meet a piling, find a reflection in the glass, or listen for a sound you had not noticed before. A familiar place often changes when you give it a little more attention.',
+        audio: 'audio/exploratorium.m4a',
+      },
+    ],
+  },
+];
