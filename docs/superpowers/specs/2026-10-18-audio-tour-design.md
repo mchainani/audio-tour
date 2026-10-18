@@ -1,6 +1,6 @@
 # Audio tour app — proposed design
 
-Status: initial design approved on 2026-10-18. Expo scaffolding, browser navigation, tour types, chapter audio playback, and the narrated San Francisco sample are implemented. The user requested audio and San Francisco narration as the next increment. Imports, persistent storage, live maps, the Golden Gate Park sample, and native device verification remain subsequent stages.
+Status: initial design approved on 2026-10-18. Expo scaffolding, browser navigation, tour types, chapter audio playback, and the narrated San Francisco sample are implemented. The user requested audio and San Francisco narration as the next increment. Directory discovery from tours/, on-demand chapter audio loading, and a five-chapter New York City tour were subsequently added at the user’s request. Imports, persistent storage, live maps, and native device verification remain subsequent stages.
 
 ## Goal
 
@@ -63,14 +63,14 @@ Successfully imported tours and their audio must survive an ordinary page refres
 
 ### Sample tours
 
-Create two short, original sample tours, each with three chapters:
+Create two short, original tours:
 
 1. **San Francisco waterfront:** Ferry Building, Pier 7, and the Exploratorium exterior.
-2. **Golden Gate Park introduction:** Conservatory of Flowers, Music Concourse, and Blue Heron Lake.
+2. **New York City: Lower Manhattan** (requested instead of Golden Gate Park): five chapters at The Battery, Bowling Green, Trinity Church, Federal Hall, and the Brooklyn Bridge entrance.
 
 Each chapter includes a brief transcript, a real map coordinate, and audible narration. At the user's request, the original macOS system voice was replaced with Microsoft's online Ava neural voice, an American female narrator; the user explicitly approved sending these sample transcripts to that service. Label the narration as synthesized demo audio. Keep factual claims conservative and exclude time-sensitive opening hours, prices, and access promises.
 
-Provide both unpacked source packages and ready-to-import ZIPs, plus a repeatable generation command. Keep samples separate from the library so the import flow can be tested end to end.
+Provide both unpacked source packages and ready-to-import ZIPs, plus a repeatable generation command. Store each tour in tours/<directory>/ with tour.json and audio/. The app discovers these source directories automatically; ZIPs are available separately inside each directory for future import testing.
 
 ## Boundaries
 

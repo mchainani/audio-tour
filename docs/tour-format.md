@@ -9,7 +9,7 @@ waterfront.zip
     ferry-building.m4a
 ```
 
-The app defines the types and bundles a complete [San Francisco demo package](../samples/san-francisco-waterfront.zip) with playable narration. **Package import and runtime validation are not implemented yet.** The following abbreviated manifest illustrates the contract; the full demo has three chapters.
+The app discovers `tours/<directory>/tour.json` and validates its manifest and referenced audio before listing it. Each chapter's audio path is relative to that tour directory, with files under `audio/`. Audio is resolved and opened only when playback is requested. [San Francisco](../tours/san-francisco-waterfront/san-francisco-waterfront.zip) has three chapters, and [New York City](../tours/new-york-city/new-york-city.zip) has five. **ZIP import is not implemented yet.** The following abbreviated manifest illustrates the contract.
 
 ```json
 {
@@ -51,4 +51,4 @@ The app defines the types and bundles a complete [San Francisco demo package](..
 | `chapters[].transcript` | Nonempty plain text; separate paragraphs with `\n\n` |
 | `chapters[].audio` | Package-relative audio path, with no absolute path or parent traversal |
 
-The importer will enforce this contract at runtime before accepting a package. TypeScript types alone do not validate uploaded JSON. Bundled demo audio uses mono AAC at 44.1 kHz in M4A containers. The accepted import formats and package size limits will be fixed when the importer is added.
+The directory catalog validates schema version, required text, unique IDs, coordinates, safe audio paths, and file presence. IDs use lowercase letters, digits, and hyphens. It accepts M4A, MP3, and WAV paths; current narration uses mono AAC at 44.1 kHz in M4A containers. The future importer will validate uploaded ZIPs separately and define package size limits.

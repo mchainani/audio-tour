@@ -5,14 +5,13 @@ import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-na
 import { Screen } from '@/components/screen';
 import { BackLink, Eyebrow, MissingContent } from '@/components/ui';
 import { ChapterPlayer } from '@/features/audio/chapter-player';
-import { getBundledAudio } from '@/features/tours/bundled-audio';
-import { previewTours } from '@/features/tours/preview-tours';
+import { loadTourAudio, tours } from '@/features/tours/catalog';
 import { colors, typography } from '@/theme';
 
 export default function ChapterScreen() {
   const { tourId, chapterId } = useLocalSearchParams<{ tourId: string; chapterId: string }>();
   const { width } = useWindowDimensions();
-  const tour = previewTours.find((entry) => entry.id === tourId);
+  const tour = tours.find((entry) => entry.id === tourId);
   const chapterIndex = tour?.chapters.findIndex((entry) => entry.id === chapterId) ?? -1;
   const chapter = tour?.chapters[chapterIndex];
 
@@ -37,7 +36,7 @@ export default function ChapterScreen() {
 
       <ChapterPlayer
         key={`${tour.id}/${chapter.id}`}
-        source={getBundledAudio(tour.id, chapter.audio)}
+        loadSource={() => loadTourAudio(tour.id, chapter.audio)}
         title={chapter.title}
         tourTitle={tour.title}
       />

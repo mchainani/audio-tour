@@ -10,7 +10,7 @@ import { useAudioSession } from './audio-session';
 import { SeekSlider } from './seek-slider';
 
 interface ChapterPlayerProps {
-  readonly source: AudioSource;
+  readonly loadSource: () => AudioSource;
   readonly title: string;
   readonly tourTitle: string;
 }
@@ -20,11 +20,13 @@ function formatTime(seconds: number) {
   return `${Math.floor(wholeSeconds / 60)}:${String(wholeSeconds % 60).padStart(2, '0')}`;
 }
 
-export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) {
+export function ChapterPlayer({ loadSource, title, tourTitle }: ChapterPlayerProps) {
   const { player, ready, error: sessionError } = useAudioSession();
   const status = useAudioPlayerStatus(player);
   const focused = useRef(false);
   const activation = useRef(0);
+  const requested = useRef(false);
+  const [hasRequested, setHasRequested] = useState(false);
   const [commandError, setCommandError] = useState<string | null>(null);
   const [seeking, setSeeking] = useState(false);
   const [dragPosition, setDragPosition] = useState<number | null>(null);
@@ -32,11 +34,13 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
   useFocusEffect(useCallback(() => {
     activation.current += 1;
     focused.current = true;
+    requested.current = false;
+    setHasRequested(false);
     setCommandError(null);
     setDragPosition(null);
     setSeeking(false);
     player.pause();
-    player.replace(source);
+    player.replace(null);
     return () => {
       activation.current += 1;
       focused.current = false;
@@ -44,18 +48,46 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
       if (Platform.OS !== 'web') {
         player.clearLockScreenControls();
       }
+      player.replace(null);
     };
-  }, [player, source]));
+  }, [player]));
 
   // replace() clears the player immediately; the preceding source's event can still be in React state.
-  const sourceLoaded = status.isLoaded && player.isLoaded;
+  const sourceLoaded = hasRequested && status.isLoaded && player.isLoaded;
   const duration = sourceLoaded && Number.isFinite(status.duration) ? Math.max(0, status.duration) : 0;
   const currentTime = Number.isFinite(status.currentTime) ? status.currentTime : 0;
   const position = Math.min(duration, Math.max(0, dragPosition ?? currentTime));
-  const error = sessionError || commandError || (!source ? 'No narration is available for this chapter.' : status.error ? 'Narration could not load. Please try again.' : null);
+  const error = sessionError || commandError || (hasRequested && status.error ? 'Narration could not load. Please try again.' : null);
   const loaded = ready && sourceLoaded && duration > 0;
   const disabled = !loaded || !!error || seeking;
-  const finished = status.didJustFinish || (duration > 0 && status.currentTime >= duration);
+  const loading = !ready || (hasRequested && !loaded && !error);
+  const playDisabled = !ready || loading || !!error || seeking;
+  const finished = loaded && (status.didJustFinish || status.currentTime >= duration);
+
+  function startPlayback() {
+    activation.current += 1;
+    requested.current = true;
+    setHasRequested(true);
+    setCommandError(null);
+    setDragPosition(null);
+    setSeeking(false);
+    try {
+      // Resolve and open audio only in response to Play or Retry, preserving the browser's user gesture.
+      const source = loadSource();
+      if (!source) {
+        setCommandError('No narration is available for this chapter.');
+        return;
+      }
+      player.pause();
+      player.replace(source);
+      if (Platform.OS !== 'web') {
+        player.setActiveForLockScreen(true, { title, artist: tourTitle });
+      }
+      player.play();
+    } catch {
+      setCommandError('Could not load this narration. Please try again.');
+    }
+  }
 
   async function seek(seconds: number) {
     if (disabled) {
@@ -78,7 +110,11 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
   }
 
   async function togglePlayback() {
-    if (disabled) {
+    if (playDisabled) {
+      return;
+    }
+    if (!requested.current) {
+      startPlayback();
       return;
     }
     const requestActivation = activation.current;
@@ -104,17 +140,6 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
     }
   }
 
-  function retry() {
-    setCommandError(null);
-    setDragPosition(null);
-    try {
-      player.pause();
-      player.replace(source);
-    } catch {
-      setCommandError('Could not reload the narration. Please reopen this chapter.');
-    }
-  }
-
   return (
     <View style={styles.player}>
       <View style={styles.heading}>
@@ -122,7 +147,8 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
           <Text style={styles.eyebrow}>LISTEN TO THIS CHAPTER</Text>
           <Text style={styles.caption}>Demo narration · Synthesized voice</Text>
         </View>
-        {!loaded && !error && <ActivityIndicator accessibilityLabel="Loading narration" color={colors.green} />}
+        {loading && !error && <ActivityIndicator accessibilityLabel="Loading narration" color={colors.green} />}
+        {!hasRequested && ready && !error && <Text style={styles.state}>Ready to listen</Text>}
         {loaded && !error && <Text style={styles.state}>{status.isBuffering ? 'Buffering…' : status.playing ? 'Playing' : finished ? 'Finished' : 'Paused'}</Text>}
       </View>
 
@@ -131,8 +157,8 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
           <Ionicons name="play-back-outline" size={22} color={colors.green} />
           <Text style={styles.skipText}>15s</Text>
         </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel={status.playing ? 'Pause narration' : finished ? 'Replay narration' : 'Play narration'} disabled={disabled} onPress={() => { void togglePlayback(); }} style={[styles.playButton, disabled && styles.disabled]}>
-          <Ionicons name={status.playing ? 'pause' : finished ? 'refresh' : 'play'} size={26} color={colors.surface} />
+        <Pressable accessibilityRole="button" accessibilityLabel={hasRequested && status.playing ? 'Pause narration' : finished ? 'Replay narration' : 'Play narration'} disabled={playDisabled} onPress={() => { void togglePlayback(); }} style={[styles.playButton, playDisabled && styles.disabled]}>
+          <Ionicons name={hasRequested && status.playing ? 'pause' : finished ? 'refresh' : 'play'} size={26} color={colors.surface} />
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Forward 15 seconds" disabled={disabled} onPress={() => { void seek(status.currentTime + 15); }} style={[styles.skipButton, disabled && styles.disabled]}>
           <Ionicons name="play-forward-outline" size={22} color={colors.green} />
@@ -151,14 +177,14 @@ export function ChapterPlayer({ source, title, tourTitle }: ChapterPlayerProps) 
       />
       <View style={styles.times}>
         <Text accessibilityLabel={`Elapsed ${formatTime(position)}`} style={styles.time}>{formatTime(position)}</Text>
-        <Text accessibilityLabel={`Duration ${formatTime(duration)}`} style={styles.time}>{formatTime(duration)}</Text>
+        <Text accessibilityLabel={loaded ? `Duration ${formatTime(duration)}` : 'Duration available after playback starts'} style={styles.time}>{loaded ? formatTime(duration) : '—:—'}</Text>
       </View>
 
       {error && (
         <View style={styles.errorBox}>
           <Text role="alert" style={styles.errorText}>{error}</Text>
-          {!!source && !sessionError && (
-            <Pressable accessibilityRole="button" onPress={retry} style={styles.retryButton}>
+          {!sessionError && (
+            <Pressable accessibilityRole="button" onPress={startPlayback} style={styles.retryButton}>
               <Text style={styles.retryText}>Retry audio</Text>
             </Pressable>
           )}

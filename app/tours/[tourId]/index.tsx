@@ -4,12 +4,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Screen } from '@/components/screen';
 import { BackLink, Badge, Eyebrow, MissingContent } from '@/components/ui';
-import { previewTours } from '@/features/tours/preview-tours';
+import { tours } from '@/features/tours/catalog';
 import { colors, typography } from '@/theme';
 
 export default function TourScreen() {
   const { tourId } = useLocalSearchParams<{ tourId: string }>();
-  const tour = previewTours.find((entry) => entry.id === tourId);
+  const tour = tours.find((entry) => entry.id === tourId);
 
   if (!tour) {
     return <Screen><MissingContent title="Tour not found" href="/" label="Back to your tours" /></Screen>;
@@ -22,7 +22,7 @@ export default function TourScreen() {
         <Badge>DEMO TOUR · WITH AUDIO</Badge>
         <Text role="heading" aria-level={1} style={styles.title}>{tour.title}</Text>
         <Text style={styles.intro}>{tour.intro}</Text>
-        <Text style={styles.metadata}>{tour.chapters.length} chapters · {tour.language}{tour.author ? ` · By ${tour.author}` : ''}</Text>
+        <Text style={styles.metadata}>{tour.chapters.length} {tour.chapters.length === 1 ? 'chapter' : 'chapters'} · {tour.language}{tour.author ? ` · By ${tour.author}` : ''}</Text>
       </View>
       <View style={styles.sectionHeading}>
         <Text role="heading" aria-level={2} style={styles.sectionTitle}>One stop at a time.</Text>

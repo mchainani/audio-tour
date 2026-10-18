@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-na
 
 import { Screen } from '@/components/screen';
 import { Badge, Eyebrow } from '@/components/ui';
-import { previewTours } from '@/features/tours/preview-tours';
+import { tours } from '@/features/tours/catalog';
 import { colors, typography } from '@/theme';
 
 export default function LibraryScreen() {
@@ -47,25 +47,26 @@ export default function LibraryScreen() {
           <Text role="heading" aria-level={2} style={styles.sectionTitle}>Your tours</Text>
           <Text style={styles.sectionDescription}>Start with a little inspiration.</Text>
         </View>
-        <Badge>{previewTours.length} demo tour</Badge>
+        <Badge>{tours.length} {tours.length === 1 ? 'tour' : 'tours'}</Badge>
       </View>
 
       <View style={[styles.libraryGrid, wide && styles.libraryGridWide]}>
         <View style={styles.tourColumn}>
-          {previewTours.map((tour) => (
+          {tours.length === 0 && <Text style={styles.nextDescription}>Your library is ready for its first tour.</Text>}
+          {tours.map((tour) => (
             <Link key={tour.id} href={{ pathname: '/tours/[tourId]', params: { tourId: tour.id } }} asChild>
               <Pressable accessibilityLabel={`Explore ${tour.title}`} style={styles.tourCard}>
                 <View style={styles.cardTop}>
                   <View style={styles.tourIcon}>
-                    <Ionicons name="boat-outline" size={30} color={colors.green} />
+                    <Ionicons name="headset-outline" size={30} color={colors.green} />
                   </View>
                   <Badge>WITH AUDIO</Badge>
                 </View>
-                <Eyebrow>SAN FRANCISCO, CALIFORNIA</Eyebrow>
+                <Eyebrow>{tour.chapters[0].location.name}</Eyebrow>
                 <Text role="heading" aria-level={3} style={styles.tourTitle}>{tour.title}</Text>
                 <Text style={styles.tourDescription}>{tour.intro}</Text>
                 <View style={styles.cardFooter}>
-                  <Text style={styles.chapterCount}>{tour.chapters.length} chapters · English</Text>
+                  <Text style={styles.chapterCount}>{tour.chapters.length} {tour.chapters.length === 1 ? 'chapter' : 'chapters'} · {tour.language}</Text>
                   <View style={styles.exploreLink}>
                     <Text style={styles.exploreText}>Explore tour</Text>
                     <Ionicons name="arrow-forward" size={17} color={colors.green} />
@@ -93,7 +94,7 @@ export default function LibraryScreen() {
       <View style={styles.previewNote}>
         <Ionicons name="information-circle-outline" size={18} color={colors.muted} />
         <Text style={styles.previewNoteText}>
-          Try the San Francisco tour with synthesized demo narration and full transcripts. Live maps and tour imports come next.
+          Explore the tours with synthesized demo narration and full transcripts. Live maps and tour imports come next.
         </Text>
       </View>
     </Screen>
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
   sectionDescription: { fontSize: 13, color: colors.muted, lineHeight: 20 },
   libraryGrid: { gap: 20 },
   libraryGridWide: { flexDirection: 'row', alignItems: 'stretch' },
-  tourColumn: { flex: 1 },
+  tourColumn: { flex: 1, gap: 20 },
   tourCard: { backgroundColor: colors.surface, padding: 26, borderRadius: 18, borderWidth: 1, borderColor: colors.border, gap: 15, flex: 1 },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 },
   tourIcon: { width: 64, height: 64, borderRadius: 19, backgroundColor: colors.sage, alignItems: 'center', justifyContent: 'center' },

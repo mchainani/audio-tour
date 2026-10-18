@@ -9,6 +9,6 @@ python3 -m venv .venv-audio
 .venv-audio/bin/python -m pip install -r scripts/requirements-audio.txt
 ```
 
-Edit the transcript here, then run `npm run generate:audio` to regenerate all narration and `samples/san-francisco-waterfront.zip`. The third-party `edge-tts` client sends transcripts to Microsoft's online speech service; internet access is required, with no API key. macOS `afconvert` only converts the returned audio to AAC/M4A. You can override `NARRATION_VOICE`, `NARRATION_RATE` (for example `+0%`), and `NARRATION_PYTHON` when running the command. A generation failure leaves the previous completed audio files and ZIP in place.
+Edit the transcript here, then run `npm run generate:audio -- san-francisco-waterfront` to regenerate this tour’s narration and `tours/san-francisco-waterfront/san-francisco-waterfront.zip`. The third-party `edge-tts` client sends transcripts to Microsoft's online speech service; internet access is required, with no API key. macOS `afconvert` only converts the returned audio to AAC/M4A. You can override `NARRATION_VOICE`, `NARRATION_RATE` (for example `+0%`), and `NARRATION_PYTHON` when running the command. A generation failure leaves the previous completed audio files and ZIP in place.
 
 The ZIP contains `tour.json` at the root and its `audio/` directory. The app currently bundles these assets; ZIP import is a separate upcoming feature. The content is demonstration material, not a complete walking itinerary or access guide.
