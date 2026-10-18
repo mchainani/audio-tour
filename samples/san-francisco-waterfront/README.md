@@ -1,7 +1,14 @@
 # San Francisco waterfront
 
-Three short demo chapters with original transcripts and synthesized narration. The voice is macOS Samantha at 155 words per minute. Audio files are AAC in an M4A container, generated directly from each chapter's transcript in `tour.json`.
+Three short demo chapters with original transcripts and AI-synthesized narration. The narrator is Microsoft's online Ava neural voice (`en-US-AvaNeural`), an American female voice, at `-5%` relative speaking rate. Audio files are AAC in an M4A container, generated directly from each chapter's unchanged transcript in `tour.json`.
 
-The app and generation script share this manifest. Edit the transcript here, then run `npm run generate:audio` on a Mac to regenerate all narration and `samples/san-francisco-waterfront.zip`. You can override `NARRATION_VOICE` and `NARRATION_RATE` when running the command.
+The app and generation script share this manifest. Set up the Python speech client once on a Mac:
+
+```sh
+python3 -m venv .venv-audio
+.venv-audio/bin/python -m pip install -r scripts/requirements-audio.txt
+```
+
+Edit the transcript here, then run `npm run generate:audio` to regenerate all narration and `samples/san-francisco-waterfront.zip`. The third-party `edge-tts` client sends transcripts to Microsoft's online speech service; internet access is required, with no API key. macOS `afconvert` only converts the returned audio to AAC/M4A. You can override `NARRATION_VOICE`, `NARRATION_RATE` (for example `+0%`), and `NARRATION_PYTHON` when running the command. A generation failure leaves the previous completed audio files and ZIP in place.
 
 The ZIP contains `tour.json` at the root and its `audio/` directory. The app currently bundles these assets; ZIP import is a separate upcoming feature. The content is demonstration material, not a complete walking itinerary or access guide.

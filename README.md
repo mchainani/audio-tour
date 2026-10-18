@@ -55,7 +55,8 @@ samples/
   san-francisco-waterfront/           Manifest and three narrated M4A files
   san-francisco-waterfront.zip        Portable tour package for future import
 scripts/
-  generate-tour-audio.mjs             Repeatable macOS speech/AAC generation
+  generate-tour-audio.mjs             Cloud neural speech and macOS AAC conversion
+  requirements-audio.txt             Pinned Python speech client
 docs/
   tour-format.md                     Manifest example and field definitions
   audio-playback.md                  Playback behavior and verification
@@ -71,9 +72,17 @@ Use an iOS development build to test the configured native silent-switch playbac
 
 ## Sample narration
 
-[San Francisco waterfront ZIP](samples/san-francisco-waterfront.zip) contains `tour.json` and three AAC/M4A files, generated from the original chapter transcripts using the macOS Samantha voice. The app bundles these same files. ZIP import is not yet available in the app.
+[San Francisco waterfront ZIP](samples/san-francisco-waterfront.zip) contains `tour.json` and three AAC/M4A files, generated from the original chapter transcripts using Microsoft's online **Ava** neural voice (`en-US-AvaNeural`), an American female voice. The app bundles these same files. ZIP import is not yet available in the app.
 
-Run `npm run generate:audio` on a Mac after editing the manifest transcripts. Optional overrides: `NARRATION_VOICE` and `NARRATION_RATE` (default 155 words/minute). Generation uses the system `say`, `afconvert`, and `zip` tools; no external speech service or key is needed. See the [sample notes](samples/san-francisco-waterfront/README.md).
+To regenerate on a Mac, install the speech client once, then run:
+
+```sh
+python3 -m venv .venv-audio
+.venv-audio/bin/python -m pip install -r scripts/requirements-audio.txt
+npm run generate:audio
+```
+
+Generation sends chapter transcripts to Microsoft's online speech service through the third-party `edge-tts` client. It requires internet access, with no API key. The default rate is `-5%` for a slightly relaxed delivery. Optional overrides: `NARRATION_VOICE`, `NARRATION_RATE` (a signed percentage), and `NARRATION_PYTHON` (another Python interpreter with the client installed). Only AAC conversion and ZIP packaging use macOS tools (`afconvert` and `zip`); system speech voices are no longer used. Normal app playback uses the bundled files and makes no speech-service requests. See the [sample notes](samples/san-francisco-waterfront/README.md).
 
 ## Next stages
 
