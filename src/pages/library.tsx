@@ -29,13 +29,13 @@ export function LibraryPage() {
       {tours.length === 0 && <p className="muted">Your library is ready for its first tour.</p>}
       {tours.map((tour, index) => (
         <Link key={tour.id} to={`/tours/${tour.id}`} aria-label={`Explore tour ${index + 1}: ${tour.title}`} className="tour-card">
-          <div className="card-top"><span className="tour-icon tour-number" aria-hidden="true">{index + 1}</span><Badge>WITH AUDIO</Badge></div>
+          <div className="card-top"><span className="tour-icon tour-number" aria-hidden="true">{index + 1}</span><Badge>{tour.chapters.some((chapter) => chapter.audio) ? 'WITH AUDIO' : 'READ THE TOUR'}</Badge></div>
           <Eyebrow>{tour.location.name}</Eyebrow>
           <h3>{tour.title}</h3><p className="tour-description">{tour.intro}</p>
           <div className="card-footer"><span>{tour.chapters.length} {tour.chapters.length === 1 ? 'chapter' : 'chapters'} · {tour.language}</span><span className="explore-link">Explore tour<ArrowRight size={17} aria-hidden="true" /></span></div>
         </Link>
       ))}
     </div>
-    <p className="preview-note"><Info size={18} aria-hidden="true" /><span>Explore the tours with synthesized demo narration, full transcripts, and maps of every stop.</span></p>
+    <p className="preview-note"><Info size={18} aria-hidden="true" /><span>Explore the tours with full transcripts, maps of every stop, and narration when available.</span></p>
   </>;
 }

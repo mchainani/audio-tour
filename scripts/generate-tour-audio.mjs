@@ -40,20 +40,36 @@ function generateTour(directory) {
   const tourDirectory = join(toursDirectory, directory);
   const tour = JSON.parse(readFileSync(join(tourDirectory, 'tour.json'), 'utf8'));
   if (!/^[a-z0-9-]+$/.test(tour.id) || !Array.isArray(tour.chapters) || tour.chapters.length === 0
-    || tour.chapters.some((chapter) => !/^[a-z0-9-]+$/.test(chapter.id) || typeof chapter.transcript !== 'string' || !/^audio\/[a-z0-9-]+\.m4a$/.test(chapter.audio))) {
-    throw new Error(`${directory}: Expected valid tour/chapter IDs, transcripts, and audio/name.m4a paths.`);
+    || tour.chapters.some((chapter) => !/^[a-z0-9-]+$/.test(chapter.id)
+      || typeof chapter.transcript !== 'string' || !/^transcripts\/[a-z0-9_-]+\.txt$/.test(chapter.transcript)
+      || (chapter.audio !== undefined && (typeof chapter.audio !== 'string' || !/^audio\/[a-z0-9-]+\.m4a$/.test(chapter.audio))))) {
+    throw new Error(`${directory}: Expected valid tour/chapter IDs, transcripts/name.txt references, and audio/name.m4a paths.`);
+  }
+  for (const chapter of tour.chapters) {
+    const transcriptPath = join(tourDirectory, chapter.transcript);
+    if (!existsSync(transcriptPath) || !readFileSync(transcriptPath, 'utf8').trim()) {
+      throw new Error(`${directory}: Missing or empty transcript file: ${chapter.transcript}`);
+    }
+  }
+  const narratedChapters = tour.chapters.filter((chapter) => chapter.audio !== undefined);
+  if (narratedChapters.length === 0) {
+    console.log(`Skipped ${directory}: no chapters have audio paths.`);
+    return;
   }
   const temporaryDirectory = mkdtempSync(join(tmpdir(), 'audio-tour-narration-'));
   const packageDirectory = join(temporaryDirectory, 'package');
 
   try {
     mkdirSync(join(packageDirectory, 'audio'), { recursive: true });
+    mkdirSync(join(packageDirectory, 'transcripts'), { recursive: true });
     writeFileSync(join(packageDirectory, 'tour.json'), JSON.stringify(tour, null, 2) + '\n');
-
     for (const chapter of tour.chapters) {
-      const transcriptPath = join(temporaryDirectory, `${chapter.id}.txt`);
+      copyFileSync(join(tourDirectory, chapter.transcript), join(packageDirectory, chapter.transcript));
+    }
+
+    for (const chapter of narratedChapters) {
+      const transcriptPath = join(packageDirectory, chapter.transcript);
       const speechPath = join(temporaryDirectory, `${chapter.id}.mp3`);
-      writeFileSync(transcriptPath, chapter.transcript + '\n');
       run(python, ['-m', 'edge_tts', '--voice', voice, `--rate=${rate}`, '--file', transcriptPath, '--write-media', speechPath, '--no-progress']);
       // Only encoding happens locally; the narration is produced by the cloud neural voice.
       run('/usr/bin/afconvert', ['-f', 'm4af', '-d', 'aac @44100', '-b', '96000', speechPath, join(packageDirectory, chapter.audio)]);
@@ -61,9 +77,9 @@ function generateTour(directory) {
     }
 
     const archivePath = join(temporaryDirectory, `${tour.id}.zip`);
-    run('/usr/bin/zip', ['-q', '-r', archivePath, 'tour.json', 'audio'], { cwd: packageDirectory });
+    run('/usr/bin/zip', ['-q', '-r', archivePath, 'tour.json', 'transcripts', 'audio'], { cwd: packageDirectory });
     mkdirSync(join(tourDirectory, 'audio'), { recursive: true });
-    for (const chapter of tour.chapters) {
+    for (const chapter of narratedChapters) {
       copyFileSync(join(packageDirectory, chapter.audio), join(tourDirectory, chapter.audio));
     }
     copyFileSync(archivePath, join(tourDirectory, `${tour.id}.zip`));

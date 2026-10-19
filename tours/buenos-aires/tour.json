@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "id": "buenos-aires",
+  "title": "Buenos Aires & Tigre: A City Told by Its People",
+  "intro": "Thirteen chapters connect the history, food, football, tango, art, faith, craftsmanship, and river life of Buenos Aires and Tigre. Follow the supplied sequence at your own pace, with travel between districts and a separate excursion to the Paraná Delta.",
+  "location": {
+    "name": "Buenos Aires & Tigre, Argentina",
+    "latitude": -34.6037,
+    "longitude": -58.3816
+  },
+  "language": "en",
+  "author": "Audio Tour",
+  "chapters": [
+    {
+      "id": "plaza-de-mayo",
+      "title": "Plaza de Mayo",
+      "audio": "audio/plaza-de-mayo.m4a",
+      "location": {
+        "name": "Plaza de Mayo",
+        "latitude": -34.6083,
+        "longitude": -58.3719
+      },
+      "transcript": "transcripts/plaza-de-mayo.txt"
+    },
+    {
+      "id": "mercado-san-telmo",
+      "title": "Mercado de San Telmo",
+      "location": {
+        "name": "Mercado de San Telmo",
+        "latitude": -34.6179,
+        "longitude": -58.3739
+      },
+      "transcript": "transcripts/mercado-san-telmo.txt",
+      "audio": "audio/mercado-san-telmo.m4a"
+    },
+    {
+      "id": "la-bombonera",
+      "title": "Estadio Alberto J. Armando: La Bombonera",
+      "location": {
+        "name": "La Bombonera, Brandsen 805",
+        "latitude": -34.6356,
+        "longitude": -58.3647
+      },
+      "transcript": "transcripts/la-bombonera.txt",
+      "audio": "audio/la-bombonera.m4a"
+    },
+    {
+      "id": "caminito",
+      "title": "Caminito",
+      "location": {
+        "name": "Caminito street museum",
+        "latitude": -34.6393,
+        "longitude": -58.3628
+      },
+      "transcript": "transcripts/caminito.txt",
+      "audio": "audio/caminito.m4a"
+    },
+    {
+      "id": "puente-de-la-mujer",
+      "title": "Puente de la Mujer",
+      "location": {
+        "name": "Puente de la Mujer, Dock 3",
+        "latitude": -34.6078,
+        "longitude": -58.3648
+      },
+      "transcript": "transcripts/puente-de-la-mujer.txt",
+      "audio": "audio/puente-de-la-mujer.m4a"
+    },
+    {
+      "id": "floralis-generica",
+      "title": "Floralis Genérica",
+      "location": {
+        "name": "Floralis Genérica, Plaza de las Naciones Unidas",
+        "latitude": -34.5817,
+        "longitude": -58.3939
+      },
+      "transcript": "transcripts/floralis-generica.txt",
+      "audio": "audio/floralis-generica.m4a"
+    },
+    {
+      "id": "recoleta-cemetery",
+      "title": "Recoleta Cemetery Experience",
+      "location": {
+        "name": "Recoleta Cemetery entrance, Junín 1760",
+        "latitude": -34.5876,
+        "longitude": -58.3935
+      },
+      "transcript": "transcripts/recoleta-cemetery.txt",
+      "audio": "audio/recoleta-cemetery.m4a"
+    },
+    {
+      "id": "el-ateneo-grand-splendid",
+      "title": "El Ateneo Grand Splendid",
+      "location": {
+        "name": "El Ateneo Grand Splendid, Avenida Santa Fe 1860",
+        "latitude": -34.596,
+        "longitude": -58.3942
+      },
+      "transcript": "transcripts/el-ateneo-grand-splendid.txt",
+      "audio": "audio/el-ateneo-grand-splendid.m4a"
+    },
+    {
+      "id": "basilica-del-pilar",
+      "title": "Basílica de Nuestra Señora del Pilar",
+      "location": {
+        "name": "Basílica de Nuestra Señora del Pilar, Junín 1904",
+        "latitude": -34.5873,
+        "longitude": -58.3911
+      },
+      "transcript": "transcripts/basilica-del-pilar.txt",
+      "audio": "audio/basilica-del-pilar.m4a"
+    },
+    {
+      "id": "cueros-antilope",
+      "title": "Cueros Antílope",
+      "location": {
+        "name": "Cueros Antílope, Tacuarí 647",
+        "latitude": -34.6158,
+        "longitude": -58.3793
+      },
+      "transcript": "transcripts/cueros-antilope.txt",
+      "audio": "audio/cueros-antilope.m4a"
+    },
+    {
+      "id": "rosedal-de-palermo",
+      "title": "Rosedal de Palermo",
+      "location": {
+        "name": "El Rosedal, Parque Tres de Febrero",
+        "latitude": -34.5723,
+        "longitude": -58.4166
+      },
+      "transcript": "transcripts/rosedal-de-palermo.txt",
+      "audio": "audio/rosedal-de-palermo.m4a"
+    },
+    {
+      "id": "delta-del-tigre",
+      "title": "Delta del Tigre",
+      "location": {
+        "name": "Estación Fluvial Domingo Faustino Sarmiento, Mitre 305, Tigre",
+        "latitude": -34.4205,
+        "longitude": -58.5794
+      },
+      "transcript": "transcripts/delta-del-tigre.txt",
+      "audio": "audio/delta-del-tigre.m4a"
+    },
+    {
+      "id": "puerto-de-frutos",
+      "title": "Puerto de Frutos",
+      "location": {
+        "name": "Puerto de Frutos, Tigre",
+        "latitude": -34.4223,
+        "longitude": -58.573
+      },
+      "transcript": "transcripts/puerto-de-frutos.txt",
+      "audio": "audio/puerto-de-frutos.m4a"
+    }
+  ]
+}

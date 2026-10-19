@@ -12,7 +12,7 @@ export function TourPage() {
   return <>
     <BackLink to="/">Your tours</BackLink>
     <section className="tour-introduction">
-      <Badge>DEMO TOUR · WITH AUDIO</Badge>
+      <Badge>{tour.chapters.some((chapter) => chapter.audio) ? 'WITH AUDIO' : 'READ THE TOUR'}</Badge>
       <h1>{tour.title}</h1><p className="tour-intro">{tour.intro}</p>
       <p className="metadata">{tour.chapters.length} {tour.chapters.length === 1 ? 'chapter' : 'chapters'} · {tour.language}{tour.author ? ` · By ${tour.author}` : ''}</p>
     </section>
@@ -27,6 +27,6 @@ export function TourPage() {
         </Link>
       </li>)}
     </ol>
-    <p className="small muted tour-note">Each chapter includes synthesized demo narration, a transcript, and a map. Listen at your own pace and open any stop in Maps.</p>
+    <p className="small muted tour-note">Every chapter includes a transcript and a map. Listen when narration is available, read at your own pace, and open any stop in Maps.</p>
   </>;
 }

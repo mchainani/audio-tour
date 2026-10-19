@@ -19,7 +19,7 @@
         "latitude": 40.7033,
         "longitude": -74.017
       },
-      "transcript": "Begin at the southern tip of Manhattan, where the city meets New York Harbor. From The Battery, the water offers a sense of the journeys that have shaped this island.\n\nLook across the harbor and notice the movement of ferries against the distant skyline. For generations, people have arrived here carrying plans, questions, and hopes. Before turning toward the busy streets, take a moment to let the waterfront set the pace.",
+      "transcript": "transcripts/the-battery.txt",
       "audio": "audio/the-battery.m4a"
     },
     {
@@ -30,7 +30,7 @@
         "latitude": 40.7049,
         "longitude": -74.0137
       },
-      "transcript": "At Bowling Green, a small patch of green sits among the buildings of Lower Manhattan. This is New York City's oldest public park, a reminder that gathering places can outlast the city around them.\n\nNotice how the curve of the park changes your view of the surrounding streets. There is a different rhythm here: a pause between the harbor and Broadway. Imagine the many versions of New York that have passed this same small space.",
+      "transcript": "transcripts/bowling-green.txt",
       "audio": "audio/bowling-green.m4a"
     },
     {
@@ -41,7 +41,7 @@
         "latitude": 40.7081,
         "longitude": -74.0122
       },
-      "transcript": "At Broadway and Wall Street, look up at Trinity Church's stone spire. The present church opened in 1846, long before the towers that now frame it. Its scale tells a different story from the skyline around it.\n\nFrom the sidewalk, notice the contrast between the churchyard and the movement of the surrounding streets. Stone, trees, glass, and traffic share this corner. The city does not replace every layer of its past; sometimes it builds around one.",
+      "transcript": "transcripts/trinity-church.txt",
       "audio": "audio/trinity-church.m4a"
     },
     {
@@ -52,7 +52,7 @@
         "latitude": 40.7074,
         "longitude": -74.0103
       },
-      "transcript": "Outside Federal Hall, the statue of George Washington marks a site connected to his inauguration as the first president in 1789. New York was briefly the nation's capital. The columned building standing here today came later.\n\nLook along Wall Street and consider the different kinds of power associated with this place: government, commerce, and the movement of money. A short stretch of pavement can hold several histories at once. Let the surrounding architecture bring those layers into view.",
+      "transcript": "transcripts/federal-hall.txt",
       "audio": "audio/federal-hall.m4a"
     },
     {
@@ -63,7 +63,7 @@
         "latitude": 40.712,
         "longitude": -74.0048
       },
-      "transcript": "Our final stop is near the Manhattan pedestrian entrance to the Brooklyn Bridge. Opened in 1883, the bridge connects Manhattan and Brooklyn across the East River. Its stone towers and web of cables remain part of the city's familiar outline.\n\nYou do not need to cross the bridge to appreciate the idea behind it: separate places brought into conversation. Think back to the harbor where this tour began. New York is a city of connections, made visible in its ferries, streets, and bridges.",
+      "transcript": "transcripts/brooklyn-bridge.txt",
       "audio": "audio/brooklyn-bridge.m4a"
     }
   ]

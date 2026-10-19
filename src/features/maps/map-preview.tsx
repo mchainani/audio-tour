@@ -9,6 +9,7 @@ import './chapter-map.css';
 export interface MapStop {
   readonly location: MapLocation;
   readonly label: string;
+  readonly href?: string;
   readonly number?: number;
 }
 
@@ -49,7 +50,14 @@ export function MapPreview({ stops, label, overview = false, fallbackMessage = '
         if (stop.number !== undefined) pin.textContent = String(stop.number);
         const popup = document.createElement('div');
         const heading = document.createElement('strong');
-        heading.textContent = stop.label;
+        if (stop.href) {
+          const link = document.createElement('a');
+          link.href = stop.href;
+          link.textContent = stop.label;
+          heading.append(link);
+        } else {
+          heading.textContent = stop.label;
+        }
         popup.append(heading);
         if (stop.label !== stop.location.name) {
           const locationName = document.createElement('div');

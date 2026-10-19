@@ -11,9 +11,10 @@ export interface Chapter {
   readonly id: string;
   readonly title: string;
   readonly location: ChapterLocation;
-  readonly transcript: string;
-  /** Package-relative path, for example audio/ferry-building.m4a. */
-  readonly audio: string;
+  /** Package-relative path to this chapter's UTF-8 plain text. */
+  readonly transcript: `transcripts/${string}.txt`;
+  /** Optional package-relative path, for example audio/ferry-building.m4a. */
+  readonly audio?: string;
 }
 
 /** Version 1 of the portable tour.json manifest. */

@@ -2,7 +2,7 @@
 
 A React web app built with TypeScript and Vite. Run it in a browser on your Mac or iPhone.
 
-The app includes a responsive tour library with a numbered city map, tour details with numbered chapter maps, chapter navigation, transcripts, audio playback with speed controls, and interactive maps. San Francisco waterfront has three chapters; New York City's Lower Manhattan tour has five. All sample recordings use synthesized Ava narration. The public app presents tours bundled during deployment; publishing tour artifacts is handled from this repository.
+The app includes a responsive tour library with a numbered city map, tour details with numbered chapter maps, chapter navigation, transcripts, optional audio playback with speed controls, and interactive maps. San Francisco waterfront has three chapters; New York City's Lower Manhattan tour has five. Their sample recordings use synthesized Ava narration. The 13-chapter [Buenos Aires & Tigre tour](tours/buenos-aires/README.md) includes Andrew narration for all 13 chapters. The public app presents tours bundled during deployment; publishing tour artifacts is handled from this repository.
 
 ## Run on your Mac
 
@@ -29,7 +29,7 @@ A deployed HTTPS site can be used in Safari without the Mac running. Offline use
 
 ## Playback and maps
 
-Open a chapter and press Play to load only its narration. Browse tours and change speed without fetching audio. Controls include play/pause, replay, ±15 seconds, a seek timeline, elapsed time, and duration. Keyboard seeking supports arrows, PageUp/PageDown, and Home/End.
+Chapters without `audio` show their transcript and map without loading the player component. For chapters with audio, press Play to load the narration. Browse tours and change speed without fetching audio. Controls include play/pause, replay, ±15 seconds, a seek timeline, elapsed time, and duration. Keyboard seeking supports arrows, PageUp/PageDown, and Home/End.
 
 Speed options are **0.75×, 1×, 1.25×, 1.5×, and 2×**, with pitch correction. Speed defaults to 1× and stays selected across chapters until the page reloads. Leaving a chapter stops playback, clears the source, and resets its position. Transcripts remain readable during media errors, and Retry reloads the audio.
 
@@ -47,7 +47,7 @@ See [audio behavior](docs/audio-playback.md) and [map behavior](docs/maps-and-sp
 | `npm run typecheck` | Check TypeScript |
 | `npm run lint` | Run ESLint |
 | `npm test` | Test browser playback lifecycle, catalog validation, Vite discovery, and map links |
-| `npm run generate:audio` | Regenerate narration and a ZIP for every tour on macOS |
+| `npm run generate:audio` | Regenerate configured chapter narration and tour ZIPs on macOS; skip chapters without audio paths |
 | `npm run generate:audio -- new-york-city` | Regenerate only the New York tour |
 
 ## Project structure
@@ -65,12 +65,21 @@ src/
   features/maps/                   Leaflet preview and external maps chooser
   features/tours/                  Manifest discovery, validation, and media lookup
 tours/
+  buenos-aires/                    Original scripts and Andrew narration
+    tour.json
+    transcripts/                   One UTF-8 .txt file per chapter
+    SOURCES.md
+    NARRATION.md
+    README.md
+    audio/
   san-francisco-waterfront/
     tour.json
+    transcripts/
     audio/
     san-francisco-waterfront.zip
   new-york-city/
     tour.json
+    transcripts/
     audio/
     new-york-city.zip
 tests/                             Node unit tests and Vite catalog integration
@@ -84,10 +93,11 @@ Create a direct subdirectory of `tours/`:
 
 ```text
 tours/your-tour/tour.json
+tours/your-tour/transcripts/first-stop.txt
 tours/your-tour/audio/first-stop.m4a
 ```
 
-Use the [version 1 schema](docs/tour-format.md), unique tour/chapter IDs, and safe relative audio paths. The catalog validates metadata, coordinates, duplicate IDs, and missing audio. Errors identify the manifest to fix. M4A, MP3, and WAV are supported.
+Use the [version 1 schema](docs/tour-format.md), unique tour/chapter IDs, and safe relative file paths. Set each chapter's `transcript` to a reference such as `transcripts/first-stop.txt`, with one nonblank UTF-8 plain text file per chapter inside that tour's `transcripts/` directory. Separate paragraphs with a blank line. Chapter `audio` is optional: omit it to publish the transcript and map without playback controls. When audio is supplied, the file must exist. The catalog validates metadata, coordinates, duplicate IDs, transcript files and their contents, and referenced audio. Errors identify the manifest to fix. M4A, MP3, and WAV are supported.
 
 Vite discovers manifests automatically, without a manual registry. Refresh after adding a complete tour. Published sites need a rebuild to include source-directory changes; browsers do not read arbitrary Mac directories at runtime. Media files are emitted as separate assets and fetched only on Play/Retry. ZIP import and persistent tour storage are not implemented.
 
@@ -115,7 +125,7 @@ The Pages project uses `main` as its production deployment branch. Wrangler also
 
 ## Tour narration
 
-Each tour directory contains its manifest, M4A recordings, and a ZIP package. Each ZIP contains its tour's manifest and recordings; the app reads the unpacked source files.
+Each tour directory contains its manifest and `transcripts/` files and may include recordings and a ZIP package. Each generated ZIP contains its tour's manifest, every referenced transcript file, and configured recordings; the app reads the unpacked source files. The generator reads the file referenced by each chapter's `transcript` field as speech input. It skips narration for chapters that omit `audio` and skips packaging tours with no audio paths.
 
 To regenerate on a Mac:
 
@@ -125,4 +135,4 @@ python3 -m venv .venv-audio
 npm run generate:audio
 ```
 
-Generation sends chapter transcripts to Microsoft's online speech service through the third-party `edge-tts` client, using **Ava** (`en-US-AvaNeural`, American female) at `-5%`. It requires internet access. Only AAC conversion and ZIP packaging use macOS tools. Normal playback uses the existing files and makes no speech-service request. Overrides: `NARRATION_VOICE`, `NARRATION_RATE`, and `NARRATION_PYTHON`.
+The generic generator sends chapter transcripts to Microsoft's online speech service through the third-party `edge-tts` client, defaulting to **Ava** (`en-US-AvaNeural`, American female) at `-5%`. Buenos Aires uses **Andrew Multilingual** (`en-US-AndrewMultilingualNeural`); set `NARRATION_VOICE` accordingly to preserve that choice. It requires internet access. Only AAC conversion and ZIP packaging use macOS tools. Normal playback uses the existing files and makes no speech-service request. Overrides: `NARRATION_VOICE`, `NARRATION_RATE`, and `NARRATION_PYTHON`.
