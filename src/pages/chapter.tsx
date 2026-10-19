@@ -3,9 +3,10 @@ import { lazy, Suspense } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { BackLink, Eyebrow, MissingContent } from '@/components/ui';
+import { AudioUnavailable } from '@/features/audio/audio-unavailable';
 import { ChapterLocationPanel } from '@/features/maps/chapter-location';
 import { ChapterPhotos } from '@/features/photos/chapter-photos';
-import { loadTourAudio, loadTourImage, loadTourTranscript, tours } from '@/features/tours/catalog';
+import { hasTourAudio, loadTourAudio, loadTourImage, loadTourTranscript, tours } from '@/features/tours/catalog';
 
 const ChapterPlayer = lazy(() => import('@/features/audio/chapter-player').then((module) => ({ default: module.ChapterPlayer })));
 
@@ -31,12 +32,13 @@ export function ChapterPage() {
         : <Link className="finish-link" to={`/tours/${tour.id}`}>← Back to tour overview</Link>}
       {next ? <Link className="button primary" replace to={`/tours/${tour.id}/chapters/${next.id}`}>Next chapter<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="finish-link" to={`/tours/${tour.id}`}>Back to tour overview →</Link>}
     </nav>
-    {chapter.audio && <Suspense fallback={null}><ChapterPlayer key={key} loadSource={() => loadTourAudio(tour.id, chapter.audio)} title={chapter.title} tourTitle={tour.title} /></Suspense>}
-    <ChapterLocationPanel key={key} location={chapter.location} />
-    {images.length > 0 && <section className="photo-panel" aria-label="Chapter photos">
-      <Eyebrow>PHOTOS</Eyebrow>
-      <ChapterPhotos key={key} images={images} locationName={chapter.location.name} />
-    </section>}
-    <section className="transcript"><h2>The transcript</h2>{transcript?.split('\n\n').map((paragraph, i) => <p key={i}>{paragraph}</p>)}</section>
+    {chapter.audio && (hasTourAudio(tour.id, chapter.audio)
+      ? <Suspense fallback={null}><ChapterPlayer key={key} loadSource={() => loadTourAudio(tour.id, chapter.audio)} title={chapter.title} tourTitle={tour.title} /></Suspense>
+      : <AudioUnavailable />)}
+    <ChapterLocationPanel key={`location/${key}`} location={chapter.location} />
+    <ChapterPhotos key={`photos/${key}`} images={images} locationName={chapter.location.name} />
+    <section className="transcript"><h2>The transcript</h2>{transcript
+      ? transcript.split('\n\n').map((paragraph, i) => <p key={i}>{paragraph}</p>)
+      : <p role="status">Transcript not available.</p>}</section>
   </>;
 }

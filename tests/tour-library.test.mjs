@@ -42,9 +42,12 @@ test('rejects inline text and unsafe transcript paths with the manifest path', (
   }
 });
 
-test('rejects missing and blank transcript files with their manifest and reference', () => {
-  assert.throws(() => createTourLibrary([transcriptEntry], [], () => null, new Map()), /tours\/guide-folder\/tour.json: Missing transcript file: transcripts\/first-stop.txt/);
-  assert.throws(() => createTourLibrary([transcriptEntry], [], () => null, new Map([['./guide-folder/transcripts/first-stop.txt', ' \n\t']])), /tours\/guide-folder\/tour.json: Empty transcript file: transcripts\/first-stop.txt/);
+test('missing and blank transcripts remain unavailable without preventing the tour from loading', () => {
+  for (const files of [new Map(), new Map([['./guide-folder/transcripts/first-stop.txt', ' \n\t']])]) {
+    const library = createTourLibrary([transcriptEntry], [], () => null, files);
+    assert.equal(library.tours[0].id, 'guide-tour');
+    assert.equal(library.loadTranscript('guide-tour', 'transcripts/first-stop.txt'), null);
+  }
 });
 
 const imageFiles = new Map([
@@ -82,10 +85,12 @@ test('rejects malformed image lists and unsafe or unsupported photo references',
   }
 });
 
-test('rejects missing referenced photos with the manifest path', () => {
+test('missing photo references do not prevent available photos from loading', () => {
   const entry = structuredClone(transcriptEntry);
-  entry.manifest.chapters[0].images = ['images/missing.jpg'];
-  assert.throws(() => createTourLibrary([entry], [], () => null, transcriptFiles, imageFiles), /tours\/guide-folder\/tour.json: Missing image file: images\/missing.jpg/);
+  entry.manifest.chapters[0].images = ['images/missing.jpg', 'images/first-stop/front.jpg'];
+  const library = createTourLibrary([entry], [], () => null, transcriptFiles, imageFiles);
+  assert.equal(library.loadImage('guide-tour', 'images/missing.jpg'), null);
+  assert.equal(library.loadImage('guide-tour', 'images/first-stop/front.jpg'), '/assets/front.jpg');
 });
 
 const transcripts = new Map(entries.flatMap(({ directory, manifest }) => manifest.chapters.map((chapter) =>
@@ -216,7 +221,18 @@ test('rejects unsupported schemas, unsafe paths, and invalid coordinates with a 
   }
 });
 
-test('rejects missing referenced audio and accepts an empty tour directory', () => {
-  assert.throws(() => createLibrary(entries, [], () => 123), /missing audio/i);
+test('missing referenced audio stays unavailable without resolving an invalid source or losing tours', () => {
+  const library = createLibrary(entries, [], () => assert.fail('Missing audio must not be resolved'));
+  assert.equal(library.tours.length, entries.length);
+  assert.equal(library.hasAudio('new-york-city', 'audio/the-battery.m4a'), false);
+  assert.equal(library.loadAudio('new-york-city', 'audio/the-battery.m4a'), null);
   assert.deepEqual(createLibrary([], [], () => 123).tours, []);
+});
+
+test('audio availability does not resolve media and resolver failures return an unavailable source', () => {
+  const library = createLibrary(entries, audioKeys, () => { throw new Error('Asset lookup failed'); });
+  assert.equal(library.hasAudio('new-york-city', 'audio/the-battery.m4a'), true);
+  assert.equal(library.hasAudio('unknown-tour', 'audio/the-battery.m4a'), false);
+  assert.equal(library.hasAudio('new-york-city', undefined), false);
+  assert.equal(library.loadAudio('new-york-city', 'audio/the-battery.m4a'), null);
 });

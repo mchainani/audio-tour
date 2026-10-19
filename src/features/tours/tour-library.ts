@@ -19,7 +19,7 @@ function isLocation(value: unknown): value is MapLocation {
     && typeof value.longitude === 'number' && Number.isFinite(value.longitude) && Math.abs(value.longitude) <= 180;
 }
 
-function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<string>, transcripts: ReadonlyMap<string, string>, images: ReadonlyMap<string, string>): asserts value is Tour {
+function validateTour(value: unknown, directory: string): asserts value is Tour {
   function invalid(message: string): never {
     throw new Error(`tours/${directory}/tour.json: ${message}`);
   }
@@ -60,13 +60,6 @@ function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<
     if (!isText(chapter.transcript) || !/^transcripts\/[a-z0-9_-]+\.txt$/.test(chapter.transcript)) {
       invalid(`Chapter ${chapter.id} needs a safe relative .txt path under transcripts/.`);
     }
-    const transcriptKey = `./${directory}/${chapter.transcript}`;
-    if (!transcripts.has(transcriptKey)) {
-      invalid(`Missing transcript file: ${chapter.transcript}`);
-    }
-    if (!isText(transcripts.get(transcriptKey))) {
-      invalid(`Empty transcript file: ${chapter.transcript}`);
-    }
     if (!isLocation(chapter.location)) {
       invalid(`Chapter ${chapter.id} needs a location name and valid coordinates.`);
     }
@@ -75,24 +68,16 @@ function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<
         || !/^images\/(?:[a-z0-9_-]+\/)*[a-z0-9_-]+\.(jpe?g|png|webp|avif)$/i.test(path))) {
         invalid(`Chapter ${chapter.id} needs an images array of safe relative photo paths under images/ (JPEG, PNG, WebP, or AVIF).`);
       }
-      for (const path of chapter.images) {
-        if (!images.has(`./${directory}/${path}`)) {
-          invalid(`Missing image file: ${path}`);
-        }
-      }
     }
     if (chapter.audio !== undefined) {
       if (!isText(chapter.audio) || !/^audio\/(?:[a-z0-9_-]+\/)*[a-z0-9_-]+\.(m4a|mp3|wav)$/i.test(chapter.audio)) {
         invalid(`Chapter ${chapter.id} needs a safe relative path under audio/ (M4A, MP3, or WAV).`);
       }
-      if (!audioKeys.has(`./${directory}/${chapter.audio}`)) {
-        invalid(`Missing audio file: ${chapter.audio}`);
-      }
     }
   }
 }
 
-/** Validate manifests and referenced files, but resolve audio only on playback. */
+/** Validate manifest structure; unavailable chapter assets resolve to null. */
 export function createTourLibrary<Asset>(entries: readonly TourManifestEntry[], audioKeys: readonly string[], loadAsset: (key: string) => Asset, transcripts: ReadonlyMap<string, string>, images: ReadonlyMap<string, string> = new Map()) {
   const availableAudio = new Set(audioKeys);
   const registeredAudio = new Map<string, ReadonlyMap<string, string>>();
@@ -101,16 +86,21 @@ export function createTourLibrary<Asset>(entries: readonly TourManifestEntry[], 
   const tours: Tour[] = [];
 
   for (const { directory, manifest } of entries) {
-    validateTour(manifest, directory, availableAudio, transcripts, images);
+    validateTour(manifest, directory);
     if (registeredAudio.has(manifest.id)) {
       throw new Error(`tours/${directory}/tour.json: Duplicate tour ID: ${manifest.id}`);
     }
     registeredAudio.set(manifest.id, new Map(manifest.chapters.flatMap((chapter) =>
-      chapter.audio ? [[chapter.audio, `./${directory}/${chapter.audio}`] as const] : [])));
-    registeredTranscripts.set(manifest.id, new Map(manifest.chapters.map((chapter) =>
-      [chapter.transcript, transcripts.get(`./${directory}/${chapter.transcript}`)!])));
+      chapter.audio && availableAudio.has(`./${directory}/${chapter.audio}`) ? [[chapter.audio, `./${directory}/${chapter.audio}`] as const] : [])));
+    registeredTranscripts.set(manifest.id, new Map(manifest.chapters.flatMap((chapter) => {
+      const text = transcripts.get(`./${directory}/${chapter.transcript}`);
+      return isText(text) ? [[chapter.transcript, text] as const] : [];
+    })));
     registeredImages.set(manifest.id, new Map(manifest.chapters.flatMap((chapter) =>
-      (chapter.images ?? []).map((path) => [path, images.get(`./${directory}/${path}`)!] as const))));
+      (chapter.images ?? []).flatMap((path) => {
+        const url = images.get(`./${directory}/${path}`);
+        return isText(url) ? [[path, url] as const] : [];
+      }))));
     tours.push(manifest);
   }
 
@@ -122,9 +112,16 @@ export function createTourLibrary<Asset>(entries: readonly TourManifestEntry[], 
     loadTranscript(tourId: string, transcriptPath: string): string | null {
       return registeredTranscripts.get(tourId)?.get(transcriptPath) ?? null;
     },
+    hasAudio(tourId: string, audioPath?: string): boolean {
+      return audioPath !== undefined && (registeredAudio.get(tourId)?.has(audioPath) ?? false);
+    },
     loadAudio(tourId: string, audioPath?: string): Asset | null {
       const key = audioPath ? registeredAudio.get(tourId)?.get(audioPath) : undefined;
-      return key ? loadAsset(key) : null;
+      try {
+        return key ? loadAsset(key) : null;
+      } catch {
+        return null;
+      }
     },
   };
 }

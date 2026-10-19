@@ -88,6 +88,34 @@ test('text-only chapters show their transcript and location without mounting aud
   }
 });
 
+test('broken chapter references show unavailable messages and retain working photos and navigation', async () => {
+  const directory = await mkdtemp(join(process.cwd(), 'tours/broken-assets-test-'));
+  const manifest = JSON.parse(await readFile('tours/san-francisco-waterfront/tour.json', 'utf8'));
+  manifest.id = directory.split('/').at(-1).toLowerCase();
+  manifest.chapters = [manifest.chapters[0]];
+  manifest.chapters[0].images = ['images/missing.jpg', 'images/working.jpg'];
+  await mkdir(join(directory, 'images'));
+  await cp('docs/screenshots/tour-overview-map.jpg', join(directory, 'images/working.jpg'));
+  await writeFile(join(directory, 'tour.json'), JSON.stringify(manifest));
+  const server = await createServer({ configFile: false, resolve: { alias: { '@': fileURLToPath(new URL('../src', import.meta.url)) } }, cacheDir: 'node_modules/.vite-test', logLevel: 'silent', server: { middlewareMode: true, hmr: false, ws: false, watch: null }, appType: 'custom' });
+  try {
+    const { ChapterPage } = await server.ssrLoadModule('/src/pages/chapter.tsx');
+    const markup = renderToStaticMarkup(createElement(MemoryRouter, { initialEntries: [`/tours/${manifest.id}/chapters/ferry-building`] },
+      createElement(Routes, null, createElement(Route, { path: '/tours/:tourId/chapters/:chapterId', element: createElement(ChapterPage) }))));
+    assert.match(markup, /Audio not available/);
+    assert.match(markup, /Transcript not available/);
+    assert.match(markup, /aria-label="Chapter navigation"/);
+    assert.match(markup, /aria-label="Chapter location"/);
+    assert.match(markup, /<img[^>]*src="[^"]*\/images\/working.jpg"/);
+    assert.doesNotMatch(markup, /missing.jpg|Play narration|Narration position|Retry audio|Next photo|Previous photo/);
+    const playerModules = server.moduleGraph.getModulesByFile(fileURLToPath(new URL('../src/features/audio/chapter-player.tsx', import.meta.url)));
+    assert.ok([...playerModules ?? []].every((module) => !module.ssrModule), 'Missing audio must not load the player module');
+  } finally {
+    await server.close();
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('chapter photos have a separate section after the map and omit controls for a single photo', async () => {
   const directory = await mkdtemp(join(process.cwd(), 'tours/photo-test-'));
   const manifest = JSON.parse(await readFile('tours/san-francisco-waterfront/tour.json', 'utf8'));

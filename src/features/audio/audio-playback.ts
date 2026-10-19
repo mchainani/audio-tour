@@ -53,6 +53,11 @@ export class AudioPlayback {
     this.update(idle);
   };
 
+  private fail(message: string) {
+    this.release();
+    this.update({ loading: false, playing: false, error: message });
+  }
+
   setRate = (rate: number) => {
     if (![0.75, 1, 1.25, 1.5, 2].includes(rate)) return;
     this.update({ rate });
@@ -76,7 +81,7 @@ export class AudioPlayback {
       const sync = (event: Event) => {
         if (this.media !== media) return;
         if (event.type === 'error') {
-          this.update({ loading: false, playing: false, error: 'Narration could not load. Please try again.' });
+          this.fail('Narration could not load. Please try again.');
           return;
         }
         if (media.playbackRate !== this.state.rate) media.playbackRate = this.state.rate;
@@ -97,7 +102,7 @@ export class AudioPlayback {
       media.playbackRate = this.state.rate;
       this.play();
     } catch {
-      this.update({ loading: false, playing: false, error: 'Could not load this narration. Please try again.' });
+      this.fail('Could not load this narration. Please try again.');
     }
   };
 
@@ -113,7 +118,7 @@ export class AudioPlayback {
     media.play().catch((error: unknown) => {
       if (error instanceof DOMException && error.name === 'AbortError') return;
       if (this.media === media) {
-        this.update({ loading: false, playing: false, error: 'Could not play this narration. Please try again.' });
+        this.fail('Could not play this narration. Please try again.');
       }
     });
   };
@@ -127,7 +132,7 @@ export class AudioPlayback {
       this.media.currentTime = currentTime;
       this.update({ currentTime, ended: currentTime >= this.state.duration });
     } catch {
-      this.update({ error: 'Could not change playback position. Try loading the audio again.' });
+      this.fail('Could not change playback position. Try loading the audio again.');
     }
   };
 }

@@ -17,5 +17,6 @@ const library = createTourLibrary(
 
 export const tours = library.tours;
 export const loadTourAudio = library.loadAudio;
+export const hasTourAudio = library.hasAudio;
 export const loadTourTranscript = library.loadTranscript;
 export const loadTourImage = library.loadImage;

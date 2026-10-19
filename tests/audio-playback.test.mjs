@@ -135,6 +135,23 @@ test('missing sources and rejected play promises produce a recoverable error', a
   assert.equal(player.getSnapshot().playing, false);
 });
 
+test('failed media loads stop and release playback while ignoring later events from the broken source', () => {
+  const { player, media } = fixture();
+  player.start(() => '/broken.m4a');
+  media[0].ready();
+  media[0].dispatchEvent(new Event('error'));
+  assert.ok(player.getSnapshot().error);
+  assert.equal(player.getSnapshot().playing, false);
+  assert.equal(media[0].paused, true);
+  assert.equal(media[0].src, '');
+  media[0].paused = false;
+  media[0].dispatchEvent(new Event('playing'));
+  assert.equal(player.getSnapshot().playing, false);
+  player.start(() => '/recovered.m4a');
+  assert.equal(player.getSnapshot().error, null);
+  assert.equal(media[1].src, '/recovered.m4a');
+});
+
 test('pausing a pending play request does not turn an expected browser cancellation into an error', async () => {
   const { player, media } = fixture();
   player.start(() => '/first.m4a');

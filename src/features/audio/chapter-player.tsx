@@ -2,6 +2,7 @@ import { Pause, Play, RotateCcw, SkipBack, SkipForward } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { useAudioSession } from './audio-session';
+import { AudioUnavailable } from './audio-unavailable';
 import { SeekSlider } from './seek-slider';
 import { SpeedSelector } from './speed-selector';
 
@@ -15,7 +16,7 @@ export function ChapterPlayer({ loadSource, title, tourTitle }: { readonly loadS
   useEffect(() => () => player.reset(), [player]);
 
   useEffect(() => {
-    if (!state.requested || !('mediaSession' in navigator)) return;
+    if (!state.requested || state.error || !('mediaSession' in navigator)) return;
     navigator.mediaSession.metadata = new MediaMetadata({ title, artist: tourTitle });
     const handlers: Partial<Record<MediaSessionAction, MediaSessionActionHandler>> = {
       play: () => player.play(), pause: () => player.pause(),
@@ -32,12 +33,14 @@ export function ChapterPlayer({ loadSource, title, tourTitle }: { readonly loadS
         try { navigator.mediaSession.setActionHandler(action as MediaSessionAction, null); } catch { /* Unsupported action. */ }
       }
     };
-  }, [player, state.requested, title, tourTitle]);
+  }, [player, state.requested, state.error, title, tourTitle]);
+
+  if (state.error) return <AudioUnavailable onRetry={() => player.start(loadSource)} />;
 
   const loaded = state.duration > 0;
-  const disabled = !loaded || !!state.error;
-  const playDisabled = !!state.error || (state.loading && !state.playing);
-  const status = state.error ? 'Audio unavailable' : !state.requested ? null : state.loading ? 'Loading…' : state.playing ? 'Playing' : state.ended ? 'Finished' : 'Paused';
+  const disabled = !loaded;
+  const playDisabled = state.loading && !state.playing;
+  const status = !state.requested ? null : state.loading ? 'Loading…' : state.playing ? 'Playing' : state.ended ? 'Finished' : 'Paused';
   function togglePlayback() {
     if (!state.requested) player.start(loadSource);
     else if (state.playing) player.pause();
@@ -56,6 +59,5 @@ export function ChapterPlayer({ loadSource, title, tourTitle }: { readonly loadS
     <SeekSlider value={Math.min(state.duration, state.currentTime)} maximumValue={state.duration || 1} disabled={disabled} valueText={`${formatTime(state.currentTime)} of ${formatTime(state.duration)}`} onSeek={player.seek} />
     <div className="player-times"><span aria-label={`Elapsed ${formatTime(state.currentTime)}`}>{formatTime(state.currentTime)}</span><span aria-label={loaded ? `Duration ${formatTime(state.duration)}` : 'Duration available after playback starts'}>{loaded ? formatTime(state.duration) : '—:—'}</span></div>
     <SpeedSelector rate={state.rate} onChange={player.setRate} />
-    {state.error && <div className="audio-error"><p role="alert">{state.error}</p><button className="button" onClick={() => player.start(loadSource)}>Retry audio</button></div>}
   </section>;
 }
