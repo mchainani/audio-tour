@@ -1,3 +1,5 @@
+import { playbackRates } from './speed-selector.types.ts';
+
 export interface PlaybackState {
   readonly requested: boolean;
   readonly loading: boolean;
@@ -59,7 +61,7 @@ export class AudioPlayback {
   }
 
   setRate = (rate: number) => {
-    if (![0.75, 1, 1.25, 1.5, 2].includes(rate)) return;
+    if (!playbackRates.some((value) => value === rate)) return;
     this.update({ rate });
     if (this.media) {
       this.media.preservesPitch = true;

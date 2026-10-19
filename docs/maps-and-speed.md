@@ -10,4 +10,4 @@ Failed or timed-out tiles show an unavailable message and Retry. The stop name, 
 
 Desktop opens a Google Maps coordinate link in a new tab. iPhone/iPad browsers offer Apple Maps and Google Maps in a standard modal dialog, with Escape/Cancel and browser-managed focus. These are web links; iOS controls whether an installed app handles them.
 
-The accessible speed radio inputs support Tab, arrows, and Space. Speeds are 0.75×–2×, default 1×, retained across chapters until page reload. See [audio behavior](audio-playback.md).
+The accessible speed radio inputs support Tab, arrows, and Space. Speeds are 0.5×–1.5×, default 1×, retained across chapters until page reload. See [audio behavior](audio-playback.md).

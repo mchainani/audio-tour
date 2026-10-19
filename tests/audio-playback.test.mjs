@@ -31,7 +31,7 @@ function fixture() {
 test('changing speed before Play does not create media or resolve narration', () => {
   const { player, media } = fixture();
   assert.equal(player.getSnapshot().rate, 1);
-  player.setRate(1.5);
+  player.setRate(0.5);
   assert.equal(media.length, 0);
   assert.equal(player.getSnapshot().requested, false);
   let resolved = 0;
@@ -39,7 +39,7 @@ test('changing speed before Play does not create media or resolve narration', ()
   assert.equal(resolved, 1);
   assert.equal(media.length, 1);
   assert.equal(media[0].src, '/tour/first.m4a');
-  assert.equal(media[0].playbackRate, 1.5);
+  assert.equal(media[0].playbackRate, 0.5);
   assert.equal(media[0].preservesPitch, true);
 });
 
@@ -49,10 +49,10 @@ test('paused speed changes preserve position and do not autoplay', () => {
   media[0].ready();
   media[0].currentTime = 9;
   player.pause();
-  player.setRate(2);
+  player.setRate(0.5);
   assert.equal(media[0].paused, true);
   assert.equal(media[0].currentTime, 9);
-  assert.equal(media[0].playbackRate, 2);
+  assert.equal(media[0].playbackRate, 0.5);
   assert.equal(player.getSnapshot().playing, false);
 });
 
@@ -73,7 +73,7 @@ test('chapter teardown releases the source and listeners but keeps session speed
   const { player, media } = fixture();
   player.start(() => '/first.m4a');
   media[0].ready();
-  player.setRate(0.75);
+  player.setRate(0.5);
   player.reset();
   assert.equal(media[0].paused, true);
   assert.equal(media[0].src, '');
@@ -82,7 +82,7 @@ test('chapter teardown releases the source and listeners but keeps session speed
   media[0].dispatchEvent(new Event('error'));
   assert.equal(player.getSnapshot().error, null);
   player.start(() => '/second.m4a');
-  assert.equal(media[1].playbackRate, 0.75);
+  assert.equal(media[1].playbackRate, 0.5);
 });
 
 test('seeks clamp to recording bounds and replay starts at zero', () => {

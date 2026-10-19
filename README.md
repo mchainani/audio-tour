@@ -31,7 +31,7 @@ A deployed HTTPS site can be used in Safari without the Mac running. Offline use
 
 Chapters without `audio` show their transcript and map without loading the player component. For chapters with audio, press Play to load the narration. Browse tours and change speed without fetching audio. Controls include play/pause, replay, ±15 seconds, a seek timeline, elapsed time, and duration. Keyboard seeking supports arrows, PageUp/PageDown, and Home/End.
 
-Speed options are **0.75×, 1×, 1.25×, 1.5×, and 2×**, with pitch correction. Speed defaults to 1× and stays selected across chapters until the page reloads. Leaving a chapter stops playback, clears the source, and resets its position. Transcripts remain readable during media errors, and Retry reloads the audio.
+Speed options are **0.5×, 0.75×, 1×, 1.25×, and 1.5×**, with pitch correction. Speed defaults to 1× and stays selected across chapters until the page reloads. Leaving a chapter stops playback, clears the source, and resets its position. Transcripts remain readable during media errors, and Retry reloads the audio.
 
 Leaflet/OpenStreetMap previews each chapter's stored coordinates. Tiles require internet access, but coordinates and the **Open in Maps** link remain available if the preview fails. Desktop opens Google Maps in a new tab. iPhone browsers offer Apple Maps or Google Maps; iOS decides whether a web link opens an installed app or its website. No location permission or API key is needed.
 
