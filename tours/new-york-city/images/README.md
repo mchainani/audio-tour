@@ -32,4 +32,3 @@ Images were resized to a maximum 1600-pixel longest edge, JPEG-compressed, and o
 - `brooklyn-bridge/gothic-tower-and-cables.jpg` — [Brooklyn Bridge Cables 2.jpg](https://commons.wikimedia.org/wiki/File:Brooklyn_Bridge_Cables_2.jpg); Balon Greyjoy; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 - `brooklyn-bridge/overhead-suspension-cables.jpg` — [The Brooklyn Bridge From Manhattan to Brooklyn.jpg](https://commons.wikimedia.org/wiki/File:The_Brooklyn_Bridge_From_Manhattan_to_Brooklyn.jpg); Summermother; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 - `brooklyn-bridge/skyline-after-dark.jpg` — [Brooklyn exposure (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Brooklyn_exposure_(Unsplash).jpg); Peter Court pic; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
-

@@ -6,9 +6,7 @@ Photos are optimized JPEGs with a maximum width of 1600 pixels. They use a 4:3 f
 
 ## Source rights notes
 
-The three Cueros Antílope photographs come from management uploads on the Tripadvisor listing supplied by the user. The showroom location was independently checked against the official shop website and the miBsAs.com listing for Tacuarí 647, San Telmo. The gallery does not state a reuse license. These local editorial selections are **not cleared for public distribution**; obtain permission from the respective rights holders or replace them with owned/licensed photos before publishing. The app has not been deployed by this photo update.
-
-The three Floralis Genérica photographs come from the city tourism office’s official landmark page. That page does not state a photo reuse license, so these selections also require rights confirmation before public distribution.
+Cueros Antílope and Floralis Genérica photos whose reuse permissions were not established have been removed from this tour and its catalog. Those chapters currently have no photos.
 
 All remaining photographs are CC0, public domain, or under the Creative Commons licenses recorded below. Attribution-dependent files include visible author, license URL, and source-page credits; their adaptations retain the source license.
 
@@ -44,12 +42,6 @@ All remaining photographs are CC0, public domain, or under the Creative Commons 
 - `puente-de-la-mujer/bridge-from-above.jpg` — [Frauenbrücke Buenos Aires.jpg](https://commons.wikimedia.org/wiki/File:Frauenbr%C3%BCcke_Buenos_Aires.jpg); Monster4711; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 - `puente-de-la-mujer/sculptural-bridge-and-skyline.jpg` — [The Puente de la Mujer or "Woman's Bridge" in Buenos Aires (2024).jpg](https://commons.wikimedia.org/wiki/File:The_Puente_de_la_Mujer_or_%22Woman%27s_Bridge%22_in_Buenos_Aires_(2024).jpg); Stch2022; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 
-## Floralis Genérica
-
-- `floralis-generica/steel-flower-and-reflecting-pool.jpg` — [Floralis Genérica by day](https://turismo.buenosaires.gob.ar/en/otros-establecimientos/floralis-gen%C3%A9rica); Photographer not identified by the tourism office; Not stated on source page; reuse permission not established.
-- `floralis-generica/flower-open-in-summer.jpg` — [Floralis Genérica in summer](https://turismo.buenosaires.gob.ar/en/otros-establecimientos/floralis-gen%C3%A9rica); Photographer not identified by the tourism office; Not stated on source page; reuse permission not established.
-- `floralis-generica/flower-gardens-and-visitors.jpg` — [Floralis Genérica and its reflecting pool](https://turismo.buenosaires.gob.ar/en/otros-establecimientos/floralis-gen%C3%A9rica); Photographer not identified by the tourism office; Not stated on source page; reuse permission not established.
-
 ## Recoleta Cemetery Experience
 
 - `recoleta-cemetery/avenue-of-mausoleums.jpg` — [Cemetery Argentina Buenos Aires 2.jpg](https://commons.wikimedia.org/wiki/File:Cemetery_Argentina_Buenos_Aires_2.jpg); Monster4711; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
@@ -68,12 +60,6 @@ All remaining photographs are CC0, public domain, or under the Creative Commons 
 - `basilica-del-pilar/white-basilica-and-recoleta-gardens.jpg` — [Imagen de la Basílica del Pilar en Recoleta. Año 2007.jpg](https://commons.wikimedia.org/wiki/File:Imagen_de_la_Bas%C3%ADlica_del_Pilar_en_Recoleta._A%C3%B1o_2007.jpg); Claudia Ortega Spahn; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
 - `basilica-del-pilar/arched-nave-and-gilded-altar.jpg` — [Iglesia del Pilar - interior, Buenos Aires ARG.jpg](https://commons.wikimedia.org/wiki/File:Iglesia_del_Pilar_-_interior,_Buenos_Aires_ARG.jpg); Stefano Vigorelli; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
 - `basilica-del-pilar/colonial-interior-and-gilded-altars.jpg` — [Interior of the Basílica de Nuestra Señora del Pilar, Buenos Aires 9.jpg](https://commons.wikimedia.org/wiki/File:Interior_of_the_Bas%C3%ADlica_de_Nuestra_Se%C3%B1ora_del_Pilar,_Buenos_Aires_9.jpg); Eugenio Hansen, OFS; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0).
-
-## Cueros Antílope
-
-- `cueros-antilope/showroom-and-chandeliers.jpg` — [Step into 30 years of Argentine leather craftsmanship](https://www.tripadvisor.com/Attraction_Review-g312741-d18920788-Reviews-Cueros_Antilope-Buenos_Aires_Capital_Federal_District.html); Photographer not identified; uploaded by Cueros Antílope management; Not stated; reuse permission not established.
-- `cueros-antilope/leather-coats-and-displays.jpg` — [Quality you can see inside and out](https://www.tripadvisor.com/Attraction_Review-g312741-d18920788-Reviews-Cueros_Antilope-Buenos_Aires_Capital_Federal_District.html); Photographer not identified; uploaded by Cueros Antílope management; Not stated; reuse permission not established.
-- `cueros-antilope/red-and-black-leather-jackets.jpg` — [From classic black to statement red](https://www.tripadvisor.com/Attraction_Review-g312741-d18920788-Reviews-Cueros_Antilope-Buenos_Aires_Capital_Federal_District.html); Photographer not identified; uploaded by Cueros Antílope management; Not stated; reuse permission not established.
 
 ## Rosedal de Palermo
 

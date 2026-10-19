@@ -20,4 +20,3 @@ Images were resized to a maximum 1600-pixel longest edge, JPEG-compressed, and o
 - `exploratorium/pier-fifteen-entrance.jpg` — [Exploratorium Pier 15 (San Francisco).JPG](https://commons.wikimedia.org/wiki/File:Exploratorium_Pier_15_(San_Francisco).JPG); Benoît Prieur; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 - `exploratorium/curved-waterfront-bench.jpg` — [Pier 15 bench at the Exploratorium.jpg](https://commons.wikimedia.org/wiki/File:Pier_15_bench_at_the_Exploratorium.jpg); Kylelovesyou; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
 - `exploratorium/magnetic-exhibit.jpg` — [Magnets at the Exploratorium.JPG](https://commons.wikimedia.org/wiki/File:Magnets_at_the_Exploratorium.JPG); ArielGlenn; [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en).
-

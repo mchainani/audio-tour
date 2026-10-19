@@ -102,12 +102,7 @@
         "longitude": -58.3939
       },
       "transcript": "transcripts/floralis-generica.txt",
-      "audio": "audio/floralis-generica.m4a",
-      "images": [
-        "images/floralis-generica/steel-flower-and-reflecting-pool.jpg",
-        "images/floralis-generica/flower-open-in-summer.jpg",
-        "images/floralis-generica/flower-gardens-and-visitors.jpg"
-      ]
+      "audio": "audio/floralis-generica.m4a"
     },
     {
       "id": "recoleta-cemetery",
@@ -167,12 +162,7 @@
         "longitude": -58.3793
       },
       "transcript": "transcripts/cueros-antilope.txt",
-      "audio": "audio/cueros-antilope.m4a",
-      "images": [
-        "images/cueros-antilope/showroom-and-chandeliers.jpg",
-        "images/cueros-antilope/leather-coats-and-displays.jpg",
-        "images/cueros-antilope/red-and-black-leather-jackets.jpg"
-      ]
+      "audio": "audio/cueros-antilope.m4a"
     },
     {
       "id": "rosedal-de-palermo",
