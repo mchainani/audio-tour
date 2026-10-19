@@ -2,7 +2,7 @@
 
 A React web app built with TypeScript and Vite. Run it in a browser on your Mac or iPhone.
 
-The app includes a responsive tour library with a numbered city map, tour details with numbered chapter maps, chapter navigation, transcripts, optional audio playback with speed controls, and interactive maps. San Francisco waterfront has three chapters; New York City's Lower Manhattan tour has five. Their sample recordings use synthesized Ava narration. The 13-chapter [Buenos Aires & Tigre tour](tours/buenos-aires/README.md) includes Andrew narration for all 13 chapters. The public app presents tours bundled during deployment; publishing tour artifacts is handled from this repository.
+The app includes a responsive tour library with a numbered city map, tour details with numbered chapter maps, chapter navigation, transcripts, optional photo carousels, optional audio playback with speed controls, and interactive maps. San Francisco waterfront has three chapters; New York City's Lower Manhattan tour has five. Their sample recordings use synthesized Ava narration. The 13-chapter [Buenos Aires & Tigre tour](tours/buenos-aires/README.md) includes Andrew narration for all 13 chapters. The public app presents tours bundled during deployment; publishing tour artifacts is handled from this repository.
 
 ## Run on your Mac
 
@@ -62,6 +62,7 @@ src/
   pages/                           Library, tour overview, chapter
   components/                      Page shell and shared UI
   features/audio/                  HTML audio controller and accessible controls
+  features/photos/                 Optional swipeable chapter photo carousel
   features/maps/                   Leaflet preview and external maps chooser
   features/tours/                  Manifest discovery, validation, and media lookup
 tours/
@@ -95,11 +96,12 @@ Create a direct subdirectory of `tours/`:
 tours/your-tour/tour.json
 tours/your-tour/transcripts/first-stop.txt
 tours/your-tour/audio/first-stop.m4a
+tours/your-tour/images/first-stop-front.jpg   # optional photos
 ```
 
-Use the [version 1 schema](docs/tour-format.md), unique tour/chapter IDs, and safe relative file paths. Set each chapter's `transcript` to a reference such as `transcripts/first-stop.txt`, with one nonblank UTF-8 plain text file per chapter inside that tour's `transcripts/` directory. Separate paragraphs with a blank line. Chapter `audio` is optional: omit it to publish the transcript and map without playback controls. When audio is supplied, the file must exist. The catalog validates metadata, coordinates, duplicate IDs, transcript files and their contents, and referenced audio. Errors identify the manifest to fix. M4A, MP3, and WAV are supported.
+Use the [version 1 schema](docs/tour-format.md), unique tour/chapter IDs, and safe relative file paths. Set each chapter's `transcript` to a reference such as `transcripts/first-stop.txt`, with one nonblank UTF-8 plain text file per chapter inside that tour's `transcripts/` directory. Separate paragraphs with a blank line. Chapter `audio` is optional: omit it to publish the transcript and map without playback controls. When audio is supplied, the file must exist. The catalog validates metadata, coordinates, duplicate IDs, transcript files and their contents, and referenced audio. Errors identify the manifest to fix. M4A, MP3, and WAV are supported for audio. Optionally add an ordered `images` array of safe paths under this tour’s `images/` directory, such as `["images/first-stop-front.jpg", "images/first-stop-detail.jpg"]`. JPEG, PNG, WebP, and AVIF photos are supported. Chapters with photos show one at a time in the separate **PHOTOS** section, with left/right swipe, buttons, and arrow-key navigation. Omit `images` or use `[]` to hide the carousel.
 
-Vite discovers manifests automatically, without a manual registry. Refresh after adding a complete tour. Published sites need a rebuild to include source-directory changes; browsers do not read arbitrary Mac directories at runtime. Media files are emitted as separate assets and fetched only on Play/Retry. ZIP import and persistent tour storage are not implemented.
+Vite discovers manifests automatically, without a manual registry. Refresh after adding a complete tour. Published sites need a rebuild to include source-directory changes; browsers do not read arbitrary Mac directories at runtime. Audio files are emitted as separate assets and fetched only on Play/Retry. Photos are separate assets loaded as they are displayed in the chapter carousel. ZIP import and persistent tour storage are not implemented.
 
 ## Build and host
 
@@ -125,7 +127,7 @@ The Pages project uses `main` as its production deployment branch. Wrangler also
 
 ## Tour narration
 
-Each tour directory contains its manifest and `transcripts/` files and may include recordings and a ZIP package. Each generated ZIP contains its tour's manifest, every referenced transcript file, and configured recordings; the app reads the unpacked source files. The generator reads the file referenced by each chapter's `transcript` field as speech input. It skips narration for chapters that omit `audio` and skips packaging tours with no audio paths.
+Each tour directory contains its manifest and `transcripts/` files and may include recordings and a ZIP package. Each generated ZIP contains its tour's manifest, every referenced transcript file and photo, and configured recordings; the app reads the unpacked source files. The generator reads the file referenced by each chapter's `transcript` field as speech input. It skips narration for chapters that omit `audio` and skips packaging tours with no audio paths.
 
 To regenerate on a Mac:
 

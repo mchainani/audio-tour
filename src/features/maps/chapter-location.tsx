@@ -18,7 +18,6 @@ export function ChapterLocationPanel({ location }: { readonly location: ChapterL
     <p className="coordinates">{location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}</p>
     {isIOS ? <button className="button map-button" aria-label={`Open ${location.name} in Maps`} onClick={() => chooser.current?.showModal()}><ExternalLink size={17} aria-hidden="true" />Open in Maps</button>
       : <a className="button map-button" aria-label={`Open ${location.name} in Maps`} href={links.googleWeb} target="_blank" rel="noopener noreferrer"><ExternalLink size={17} aria-hidden="true" />Open in Maps</a>}
-    <p className="map-hint">{isIOS ? 'Choose Apple Maps or Google Maps.' : 'Opens Google Maps.'} Map preview requires internet.</p>
     <dialog ref={chooser} className="maps-dialog" aria-labelledby="maps-dialog-title">
       <h2 id="maps-dialog-title">Open in Maps</h2><p>{location.name}</p>
       <a className="button" href={links.apple} target="_blank" rel="noopener noreferrer" onClick={() => chooser.current?.close()}>Apple Maps</a>

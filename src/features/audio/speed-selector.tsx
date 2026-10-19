@@ -9,8 +9,7 @@ export function SpeedSelector({ rate, onChange }: SpeedSelectorProps) {
   const name = useId();
   return (
     <div className="speed-selector">
-      <fieldset>
-        <legend>Playback speed</legend>
+      <fieldset aria-label="Playback speed">
         <div className="speed-selector-options">
           {playbackRates.map((value) => (
             <label key={value} className={rate === value ? 'speed-option selected' : 'speed-option'}>

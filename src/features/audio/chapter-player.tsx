@@ -37,7 +37,7 @@ export function ChapterPlayer({ loadSource, title, tourTitle }: { readonly loadS
   const loaded = state.duration > 0;
   const disabled = !loaded || !!state.error;
   const playDisabled = !!state.error || (state.loading && !state.playing);
-  const status = state.error ? 'Audio unavailable' : !state.requested ? 'Ready to listen' : state.loading ? 'Loading…' : state.playing ? 'Playing' : state.ended ? 'Finished' : 'Paused';
+  const status = state.error ? 'Audio unavailable' : !state.requested ? null : state.loading ? 'Loading…' : state.playing ? 'Playing' : state.ended ? 'Finished' : 'Paused';
   function togglePlayback() {
     if (!state.requested) player.start(loadSource);
     else if (state.playing) player.pause();
@@ -45,7 +45,7 @@ export function ChapterPlayer({ loadSource, title, tourTitle }: { readonly loadS
   }
 
   return <section className="player" aria-label="Chapter narration">
-    <div className="player-heading"><div><p className="player-eyebrow">LISTEN TO THIS CHAPTER</p><p className="player-caption">Demo narration · Synthesized voice</p></div><span className="player-state" role="status">{status}</span></div>
+    <div className="player-heading"><p className="player-eyebrow">LISTEN TO THIS CHAPTER</p>{status && <span className="player-state" role="status">{status}</span>}</div>
     <div className="player-controls">
       <button className="skip-button" aria-label="Back 15 seconds" disabled={disabled} onClick={() => player.seek(state.currentTime - 15)}><SkipBack size={22} aria-hidden="true" /><span>15s</span></button>
       <button className="play-button" aria-label={state.playing ? 'Pause narration' : state.ended ? 'Replay narration' : 'Play narration'} disabled={playDisabled} onClick={togglePlayback}>

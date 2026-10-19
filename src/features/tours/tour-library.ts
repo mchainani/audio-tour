@@ -19,7 +19,7 @@ function isLocation(value: unknown): value is MapLocation {
     && typeof value.longitude === 'number' && Number.isFinite(value.longitude) && Math.abs(value.longitude) <= 180;
 }
 
-function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<string>, transcripts: ReadonlyMap<string, string>): asserts value is Tour {
+function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<string>, transcripts: ReadonlyMap<string, string>, images: ReadonlyMap<string, string>): asserts value is Tour {
   function invalid(message: string): never {
     throw new Error(`tours/${directory}/tour.json: ${message}`);
   }
@@ -70,6 +70,17 @@ function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<
     if (!isLocation(chapter.location)) {
       invalid(`Chapter ${chapter.id} needs a location name and valid coordinates.`);
     }
+    if (chapter.images !== undefined) {
+      if (!Array.isArray(chapter.images) || chapter.images.some((path) => typeof path !== 'string'
+        || !/^images\/(?:[a-z0-9_-]+\/)*[a-z0-9_-]+\.(jpe?g|png|webp|avif)$/i.test(path))) {
+        invalid(`Chapter ${chapter.id} needs an images array of safe relative photo paths under images/ (JPEG, PNG, WebP, or AVIF).`);
+      }
+      for (const path of chapter.images) {
+        if (!images.has(`./${directory}/${path}`)) {
+          invalid(`Missing image file: ${path}`);
+        }
+      }
+    }
     if (chapter.audio !== undefined) {
       if (!isText(chapter.audio) || !/^audio\/(?:[a-z0-9_-]+\/)*[a-z0-9_-]+\.(m4a|mp3|wav)$/i.test(chapter.audio)) {
         invalid(`Chapter ${chapter.id} needs a safe relative path under audio/ (M4A, MP3, or WAV).`);
@@ -81,15 +92,16 @@ function validateTour(value: unknown, directory: string, audioKeys: ReadonlySet<
   }
 }
 
-/** Validate manifests and transcript files, but resolve media only on playback. */
-export function createTourLibrary<Asset>(entries: readonly TourManifestEntry[], audioKeys: readonly string[], loadAsset: (key: string) => Asset, transcripts: ReadonlyMap<string, string>) {
+/** Validate manifests and referenced files, but resolve audio only on playback. */
+export function createTourLibrary<Asset>(entries: readonly TourManifestEntry[], audioKeys: readonly string[], loadAsset: (key: string) => Asset, transcripts: ReadonlyMap<string, string>, images: ReadonlyMap<string, string> = new Map()) {
   const availableAudio = new Set(audioKeys);
   const registeredAudio = new Map<string, ReadonlyMap<string, string>>();
   const registeredTranscripts = new Map<string, ReadonlyMap<string, string>>();
+  const registeredImages = new Map<string, ReadonlyMap<string, string>>();
   const tours: Tour[] = [];
 
   for (const { directory, manifest } of entries) {
-    validateTour(manifest, directory, availableAudio, transcripts);
+    validateTour(manifest, directory, availableAudio, transcripts, images);
     if (registeredAudio.has(manifest.id)) {
       throw new Error(`tours/${directory}/tour.json: Duplicate tour ID: ${manifest.id}`);
     }
@@ -97,11 +109,16 @@ export function createTourLibrary<Asset>(entries: readonly TourManifestEntry[], 
       chapter.audio ? [[chapter.audio, `./${directory}/${chapter.audio}`] as const] : [])));
     registeredTranscripts.set(manifest.id, new Map(manifest.chapters.map((chapter) =>
       [chapter.transcript, transcripts.get(`./${directory}/${chapter.transcript}`)!])));
+    registeredImages.set(manifest.id, new Map(manifest.chapters.flatMap((chapter) =>
+      (chapter.images ?? []).map((path) => [path, images.get(`./${directory}/${path}`)!] as const))));
     tours.push(manifest);
   }
 
   return {
     tours: tours.sort((left, right) => left.title.localeCompare(right.title)) as readonly Tour[],
+    loadImage(tourId: string, imagePath: string): string | null {
+      return registeredImages.get(tourId)?.get(imagePath) ?? null;
+    },
     loadTranscript(tourId: string, transcriptPath: string): string | null {
       return registeredTranscripts.get(tourId)?.get(transcriptPath) ?? null;
     },

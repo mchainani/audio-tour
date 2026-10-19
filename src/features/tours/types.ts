@@ -15,6 +15,8 @@ export interface Chapter {
   readonly transcript: `transcripts/${string}.txt`;
   /** Optional package-relative path, for example audio/ferry-building.m4a. */
   readonly audio?: string;
+  /** Optional ordered photo paths relative to this tour, under images/. */
+  readonly images?: readonly string[];
 }
 
 /** Version 1 of the portable tour.json manifest. */

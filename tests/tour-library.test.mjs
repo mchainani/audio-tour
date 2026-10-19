@@ -47,14 +47,64 @@ test('rejects missing and blank transcript files with their manifest and referen
   assert.throws(() => createTourLibrary([transcriptEntry], [], () => null, new Map([['./guide-folder/transcripts/first-stop.txt', ' \n\t']])), /tours\/guide-folder\/tour.json: Empty transcript file: transcripts\/first-stop.txt/);
 });
 
+const imageFiles = new Map([
+  ['./guide-folder/images/first-stop/front.jpg', '/assets/front.jpg'],
+  ['./guide-folder/images/first-stop/detail.PNG', '/assets/detail.PNG'],
+  ['./guide-folder/images/unlisted.webp', '/assets/unlisted.webp'],
+]);
+
+test('preserves optional image references and resolves declared photos within their tour directory', () => {
+  const entry = structuredClone(transcriptEntry);
+  entry.manifest.chapters[0].images = ['images/first-stop/front.jpg', 'images/first-stop/detail.PNG'];
+  const library = createTourLibrary([entry], [], () => assert.fail('Photos must not resolve audio'), transcriptFiles, imageFiles);
+  assert.deepEqual(library.tours[0].chapters[0].images, ['images/first-stop/front.jpg', 'images/first-stop/detail.PNG']);
+  assert.equal(library.loadImage('guide-tour', 'images/first-stop/front.jpg'), '/assets/front.jpg');
+  assert.equal(library.loadImage('guide-tour', 'images/first-stop/detail.PNG'), '/assets/detail.PNG');
+  assert.equal(library.loadImage('unknown-tour', 'images/first-stop/front.jpg'), null);
+  assert.equal(library.loadImage('guide-tour', 'images/unlisted.webp'), null);
+  assert.equal(library.loadImage('guide-tour', '../other/images/front.jpg'), null);
+});
+
+test('accepts absent and empty chapter image lists without exposing undeclared photos', () => {
+  for (const images of [undefined, []]) {
+    const entry = structuredClone(transcriptEntry);
+    if (images !== undefined) entry.manifest.chapters[0].images = images;
+    const library = createTourLibrary([entry], [], () => null, transcriptFiles, imageFiles);
+    assert.equal(library.loadImage('guide-tour', 'images/first-stop/front.jpg'), null);
+  }
+});
+
+test('rejects malformed image lists and unsafe or unsupported photo references', () => {
+  for (const images of [null, 'images/front.jpg', {}, [null], [3], [''], ['https://example.com/front.jpg'], ['/images/front.jpg'], ['images/../front.jpg'], ['images/a/../../front.jpg'], ['images\\front.jpg'], ['images/front.svg'], ['images/front.heic']]) {
+    const entry = structuredClone(transcriptEntry);
+    entry.manifest.chapters[0].images = images;
+    assert.throws(() => createTourLibrary([entry], [], () => null, transcriptFiles, imageFiles), /tours\/guide-folder\/tour.json: Chapter first-stop needs .*images/);
+  }
+});
+
+test('rejects missing referenced photos with the manifest path', () => {
+  const entry = structuredClone(transcriptEntry);
+  entry.manifest.chapters[0].images = ['images/missing.jpg'];
+  assert.throws(() => createTourLibrary([entry], [], () => null, transcriptFiles, imageFiles), /tours\/guide-folder\/tour.json: Missing image file: images\/missing.jpg/);
+});
+
 const transcripts = new Map(entries.flatMap(({ directory, manifest }) => manifest.chapters.map((chapter) =>
   [`./${directory}/${chapter.transcript}`, readFileSync(new URL(`${directory}/${chapter.transcript}`, root), 'utf8')])));
+const tourImages = new Map(entries.flatMap(({ directory, manifest }) => manifest.chapters.flatMap((chapter) =>
+  (chapter.images ?? []).map((path) => {
+    assert.ok(existsSync(new URL(`${directory}/${path}`, root)), `Missing photo: ${directory}/${path}`);
+    return [`./${directory}/${path}`, `/tours/${directory}/${path}`];
+  }))));
 function rebaseTranscripts(directory) {
   return new Map([...transcripts, ...audioEntry.manifest.chapters.map((chapter) =>
     [`./${directory}/${chapter.transcript}`, transcripts.get(`./${audioEntry.directory}/${chapter.transcript}`)])]);
 }
-function createLibrary(entries, audioKeys, loadAsset, files = transcripts) {
-  return createTourLibrary(entries, audioKeys, loadAsset, files);
+function rebaseImages(directory) {
+  return new Map([...tourImages, ...audioEntry.manifest.chapters.flatMap((chapter) =>
+    (chapter.images ?? []).map((path) => [`./${directory}/${path}`, `/tours/${directory}/${path}`]))]);
+}
+function createLibrary(entries, audioKeys, loadAsset, files = transcripts, images = tourImages) {
+  return createTourLibrary(entries, audioKeys, loadAsset, files, images);
 }
 
 test('accepts chapters without audio without resolving media', () => {
@@ -94,7 +144,7 @@ test('discovers every tour manifest without a manually maintained tour list', ()
   extra.directory = 'third-tour';
   extra.manifest.id = 'third-tour';
   const extraKeys = extra.manifest.chapters.map((chapter) => `./third-tour/${chapter.audio}`);
-  assert.equal(createLibrary([...entries, extra], [...audioKeys, ...extraKeys], () => 123, rebaseTranscripts(extra.directory)).tours.length, entries.length + 1);
+  assert.equal(createLibrary([...entries, extra], [...audioKeys, ...extraKeys], () => 123, rebaseTranscripts(extra.directory), rebaseImages(extra.directory)).tours.length, entries.length + 1);
 });
 
 test('reads metadata without resolving any audio and resolves only requested chapter audio', () => {
@@ -115,7 +165,7 @@ test('uses the manifest directory even when it differs from the tour ID', () => 
   const entry = structuredClone(audioEntry);
   entry.directory = 'different-folder';
   const keys = entry.manifest.chapters.map((chapter) => `./different-folder/${chapter.audio}`);
-  const library = createLibrary([entry], keys, (key) => key, rebaseTranscripts(entry.directory));
+  const library = createLibrary([entry], keys, (key) => key, rebaseTranscripts(entry.directory), rebaseImages(entry.directory));
   assert.equal(library.loadAudio(entry.manifest.id, entry.manifest.chapters[0].audio), keys[0]);
 });
 

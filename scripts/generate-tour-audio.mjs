@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 if (process.platform !== 'darwin') {
@@ -50,7 +50,17 @@ function generateTour(directory) {
     if (!existsSync(transcriptPath) || !readFileSync(transcriptPath, 'utf8').trim()) {
       throw new Error(`${directory}: Missing or empty transcript file: ${chapter.transcript}`);
     }
+    if (chapter.images !== undefined && (!Array.isArray(chapter.images) || chapter.images.some((path) => typeof path !== 'string'
+      || !/^images\/(?:[a-z0-9_-]+\/)*[a-z0-9_-]+\.(jpe?g|png|webp|avif)$/i.test(path)))) {
+      throw new Error(`${directory}: Expected an images array of safe relative JPEG, PNG, WebP, or AVIF paths under images/.`);
+    }
+    for (const path of chapter.images ?? []) {
+      if (!existsSync(join(tourDirectory, path)) || !statSync(join(tourDirectory, path)).isFile()) {
+        throw new Error(`${directory}: Missing image file: ${path}`);
+      }
+    }
   }
+  const images = [...new Set(tour.chapters.flatMap((chapter) => chapter.images ?? []))];
   const narratedChapters = tour.chapters.filter((chapter) => chapter.audio !== undefined);
   if (narratedChapters.length === 0) {
     console.log(`Skipped ${directory}: no chapters have audio paths.`);
@@ -66,6 +76,10 @@ function generateTour(directory) {
     for (const chapter of tour.chapters) {
       copyFileSync(join(tourDirectory, chapter.transcript), join(packageDirectory, chapter.transcript));
     }
+    for (const image of images) {
+      mkdirSync(join(packageDirectory, dirname(image)), { recursive: true });
+      copyFileSync(join(tourDirectory, image), join(packageDirectory, image));
+    }
 
     for (const chapter of narratedChapters) {
       const transcriptPath = join(packageDirectory, chapter.transcript);
@@ -77,7 +91,7 @@ function generateTour(directory) {
     }
 
     const archivePath = join(temporaryDirectory, `${tour.id}.zip`);
-    run('/usr/bin/zip', ['-q', '-r', archivePath, 'tour.json', 'transcripts', 'audio'], { cwd: packageDirectory });
+    run('/usr/bin/zip', ['-q', '-r', archivePath, 'tour.json', 'transcripts', 'audio', ...(images.length > 0 ? ['images'] : [])], { cwd: packageDirectory });
     mkdirSync(join(tourDirectory, 'audio'), { recursive: true });
     for (const chapter of narratedChapters) {
       copyFileSync(join(packageDirectory, chapter.audio), join(tourDirectory, chapter.audio));

@@ -19,7 +19,6 @@ export function Screen() {
           <span className="brand-icon"><Headphones size={21} /></span>
           <span>Audio Tour</span>
         </Link>
-        <span className="preview-badge"><span />App preview</span>
       </header>
       <main id="main" ref={main} tabIndex={-1}><Outlet /></main>
       <footer className="site-footer"><span>A little more to every place.</span><span>EARLY BUILD · 0.1</span></footer>

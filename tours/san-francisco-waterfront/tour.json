@@ -20,7 +20,12 @@
         "longitude": -122.3937
       },
       "transcript": "transcripts/ferry-building.txt",
-      "audio": "audio/ferry-building.m4a"
+      "audio": "audio/ferry-building.m4a",
+      "images": [
+        "images/ferry-building/morning-bay-view.jpg",
+        "images/ferry-building/clock-tower-and-bay.jpg",
+        "images/ferry-building/market-street-approach.jpg"
+      ]
     },
     {
       "id": "pier-seven",
@@ -31,7 +36,11 @@
         "longitude": -122.3947
       },
       "transcript": "transcripts/pier-seven.txt",
-      "audio": "audio/pier-seven.m4a"
+      "audio": "audio/pier-seven.m4a",
+      "images": [
+        "images/pier-seven/pier-and-skyline.jpg",
+        "images/pier-seven/waterfront-entrance.jpg"
+      ]
     },
     {
       "id": "exploratorium",
@@ -42,7 +51,12 @@
         "longitude": -122.3984
       },
       "transcript": "transcripts/exploratorium.txt",
-      "audio": "audio/exploratorium.m4a"
+      "audio": "audio/exploratorium.m4a",
+      "images": [
+        "images/exploratorium/pier-fifteen-entrance.jpg",
+        "images/exploratorium/curved-waterfront-bench.jpg",
+        "images/exploratorium/magnetic-exhibit.jpg"
+      ]
     }
   ]
 }

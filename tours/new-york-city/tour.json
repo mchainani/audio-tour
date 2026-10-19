@@ -20,7 +20,12 @@
         "longitude": -74.017
       },
       "transcript": "transcripts/the-battery.txt",
-      "audio": "audio/the-battery.m4a"
+      "audio": "audio/the-battery.m4a",
+      "images": [
+        "images/the-battery/castle-clinton-entrance.jpg",
+        "images/the-battery/castle-clinton-view.jpg",
+        "images/the-battery/harbor-at-sunset.jpg"
+      ]
     },
     {
       "id": "bowling-green",
@@ -31,7 +36,11 @@
         "longitude": -74.0137
       },
       "transcript": "transcripts/bowling-green.txt",
-      "audio": "audio/bowling-green.m4a"
+      "audio": "audio/bowling-green.m4a",
+      "images": [
+        "images/bowling-green/park-fountain-and-gardens.jpg",
+        "images/bowling-green/alexander-hamilton-custom-house.jpg"
+      ]
     },
     {
       "id": "trinity-church",
@@ -42,7 +51,12 @@
         "longitude": -74.0122
       },
       "transcript": "transcripts/trinity-church.txt",
-      "audio": "audio/trinity-church.m4a"
+      "audio": "audio/trinity-church.m4a",
+      "images": [
+        "images/trinity-church/historic-churchyard.jpg",
+        "images/trinity-church/church-from-wall-street.jpg",
+        "images/trinity-church/elizabeth-hamilton-grave.jpg"
+      ]
     },
     {
       "id": "federal-hall",
@@ -53,7 +67,12 @@
         "longitude": -74.0103
       },
       "transcript": "transcripts/federal-hall.txt",
-      "audio": "audio/federal-hall.m4a"
+      "audio": "audio/federal-hall.m4a",
+      "images": [
+        "images/federal-hall/columns-and-washington.jpg",
+        "images/federal-hall/rotunda-dome.jpg",
+        "images/federal-hall/marble-rotunda.jpg"
+      ]
     },
     {
       "id": "brooklyn-bridge",
@@ -64,7 +83,12 @@
         "longitude": -74.0048
       },
       "transcript": "transcripts/brooklyn-bridge.txt",
-      "audio": "audio/brooklyn-bridge.m4a"
+      "audio": "audio/brooklyn-bridge.m4a",
+      "images": [
+        "images/brooklyn-bridge/gothic-tower-and-cables.jpg",
+        "images/brooklyn-bridge/overhead-suspension-cables.jpg",
+        "images/brooklyn-bridge/skyline-after-dark.jpg"
+      ]
     }
   ]
 }

@@ -4,7 +4,8 @@ import { Link, useParams } from 'react-router-dom';
 
 import { BackLink, Eyebrow, MissingContent } from '@/components/ui';
 import { ChapterLocationPanel } from '@/features/maps/chapter-location';
-import { loadTourAudio, loadTourTranscript, tours } from '@/features/tours/catalog';
+import { ChapterPhotos } from '@/features/photos/chapter-photos';
+import { loadTourAudio, loadTourImage, loadTourTranscript, tours } from '@/features/tours/catalog';
 
 const ChapterPlayer = lazy(() => import('@/features/audio/chapter-player').then((module) => ({ default: module.ChapterPlayer })));
 
@@ -15,6 +16,7 @@ export function ChapterPage() {
   const chapter = tour?.chapters[index];
   if (!tour || !chapter) return <MissingContent title="Chapter not found" />;
   const transcript = loadTourTranscript(tour.id, chapter.transcript);
+  const images = (chapter.images ?? []).map((path) => loadTourImage(tour.id, path)).filter((url): url is string => url !== null);
   const previous = tour.chapters[index - 1];
   const next = tour.chapters[index + 1];
   const key = `${tour.id}/${chapter.id}`;
@@ -24,14 +26,17 @@ export function ChapterPage() {
       <Eyebrow>CHAPTER {String(index + 1).padStart(2, '0')} OF {String(tour.chapters.length).padStart(2, '0')}</Eyebrow>
       <h1>{chapter.title}</h1><p className="location-line"><MapPin size={16} aria-hidden="true" />{chapter.location.name}</p>
     </section>
-    {chapter.audio && <Suspense fallback={null}><ChapterPlayer key={key} loadSource={() => loadTourAudio(tour.id, chapter.audio)} title={chapter.title} tourTitle={tour.title} /></Suspense>}
-    <div className="chapter-columns">
-      <section className="transcript"><h2>The transcript</h2>{transcript?.split('\n\n').map((paragraph, i) => <p key={i}>{paragraph}</p>)}</section>
-      <ChapterLocationPanel key={key} location={chapter.location} />
-    </div>
     <nav className="chapter-navigation" aria-label="Chapter navigation">
-      {previous ? <Link className="button" replace to={`/tours/${tour.id}/chapters/${previous.id}`}><ArrowLeft size={17} aria-hidden="true" />Previous chapter</Link> : <span />}
+      {previous ? <Link className="button" replace to={`/tours/${tour.id}/chapters/${previous.id}`}><ArrowLeft size={17} aria-hidden="true" />Previous chapter</Link>
+        : <Link className="finish-link" to={`/tours/${tour.id}`}>← Back to tour overview</Link>}
       {next ? <Link className="button primary" replace to={`/tours/${tour.id}/chapters/${next.id}`}>Next chapter<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="finish-link" to={`/tours/${tour.id}`}>Back to tour overview →</Link>}
     </nav>
+    {chapter.audio && <Suspense fallback={null}><ChapterPlayer key={key} loadSource={() => loadTourAudio(tour.id, chapter.audio)} title={chapter.title} tourTitle={tour.title} /></Suspense>}
+    <ChapterLocationPanel key={key} location={chapter.location} />
+    {images.length > 0 && <section className="photo-panel" aria-label="Chapter photos">
+      <Eyebrow>PHOTOS</Eyebrow>
+      <ChapterPhotos key={key} images={images} locationName={chapter.location.name} />
+    </section>}
+    <section className="transcript"><h2>The transcript</h2>{transcript?.split('\n\n').map((paragraph, i) => <p key={i}>{paragraph}</p>)}</section>
   </>;
 }

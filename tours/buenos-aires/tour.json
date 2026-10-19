@@ -20,7 +20,12 @@
         "latitude": -34.6083,
         "longitude": -58.3719
       },
-      "transcript": "transcripts/plaza-de-mayo.txt"
+      "transcript": "transcripts/plaza-de-mayo.txt",
+      "images": [
+        "images/plaza-de-mayo/casa-rosada-evening.jpg",
+        "images/plaza-de-mayo/cabildo-and-plaza.jpg",
+        "images/plaza-de-mayo/plaza-from-casa-rosada.jpg"
+      ]
     },
     {
       "id": "mercado-san-telmo",
@@ -31,7 +36,12 @@
         "longitude": -58.3739
       },
       "transcript": "transcripts/mercado-san-telmo.txt",
-      "audio": "audio/mercado-san-telmo.m4a"
+      "audio": "audio/mercado-san-telmo.m4a",
+      "images": [
+        "images/mercado-san-telmo/colorful-produce-stall.jpg",
+        "images/mercado-san-telmo/food-hall-and-stalls.jpg",
+        "images/mercado-san-telmo/historic-iron-roof.jpg"
+      ]
     },
     {
       "id": "la-bombonera",
@@ -42,7 +52,13 @@
         "longitude": -58.3647
       },
       "transcript": "transcripts/la-bombonera.txt",
-      "audio": "audio/la-bombonera.m4a"
+      "audio": "audio/la-bombonera.m4a",
+      "images": [
+        "images/la-bombonera/pitch-and-blue-yellow-stands.jpg",
+        "images/la-bombonera/aerial-stadium-and-la-boca.jpg",
+        "images/la-bombonera/stadium-at-dusk.jpg",
+        "images/la-bombonera/match-night-crowd.jpg"
+      ]
     },
     {
       "id": "caminito",
@@ -53,7 +69,13 @@
         "longitude": -58.3628
       },
       "transcript": "transcripts/caminito.txt",
-      "audio": "audio/caminito.m4a"
+      "audio": "audio/caminito.m4a",
+      "images": [
+        "images/caminito/colorful-caminito-corner.jpg",
+        "images/caminito/la-perla-red-window.jpg",
+        "images/caminito/painted-corrugated-houses.jpg",
+        "images/caminito/balconies-and-summer-trees.jpg"
+      ]
     },
     {
       "id": "puente-de-la-mujer",
@@ -64,7 +86,12 @@
         "longitude": -58.3648
       },
       "transcript": "transcripts/puente-de-la-mujer.txt",
-      "audio": "audio/puente-de-la-mujer.m4a"
+      "audio": "audio/puente-de-la-mujer.m4a",
+      "images": [
+        "images/puente-de-la-mujer/bridge-and-dock.jpg",
+        "images/puente-de-la-mujer/bridge-from-above.jpg",
+        "images/puente-de-la-mujer/sculptural-bridge-and-skyline.jpg"
+      ]
     },
     {
       "id": "floralis-generica",
@@ -75,7 +102,12 @@
         "longitude": -58.3939
       },
       "transcript": "transcripts/floralis-generica.txt",
-      "audio": "audio/floralis-generica.m4a"
+      "audio": "audio/floralis-generica.m4a",
+      "images": [
+        "images/floralis-generica/steel-flower-and-reflecting-pool.jpg",
+        "images/floralis-generica/flower-open-in-summer.jpg",
+        "images/floralis-generica/flower-gardens-and-visitors.jpg"
+      ]
     },
     {
       "id": "recoleta-cemetery",
@@ -86,7 +118,12 @@
         "longitude": -58.3935
       },
       "transcript": "transcripts/recoleta-cemetery.txt",
-      "audio": "audio/recoleta-cemetery.m4a"
+      "audio": "audio/recoleta-cemetery.m4a",
+      "images": [
+        "images/recoleta-cemetery/avenue-of-mausoleums.jpg",
+        "images/recoleta-cemetery/neoclassical-entrance.jpg",
+        "images/recoleta-cemetery/eva-peron-memorial.jpg"
+      ]
     },
     {
       "id": "el-ateneo-grand-splendid",
@@ -97,7 +134,13 @@
         "longitude": -58.3942
       },
       "transcript": "transcripts/el-ateneo-grand-splendid.txt",
-      "audio": "audio/el-ateneo-grand-splendid.m4a"
+      "audio": "audio/el-ateneo-grand-splendid.m4a",
+      "images": [
+        "images/el-ateneo-grand-splendid/theater-turned-bookstore.jpg",
+        "images/el-ateneo-grand-splendid/balcony-view-of-bookstore.jpg",
+        "images/el-ateneo-grand-splendid/painted-theater-dome.jpg",
+        "images/el-ateneo-grand-splendid/cafe-on-the-former-stage.jpg"
+      ]
     },
     {
       "id": "basilica-del-pilar",
@@ -108,7 +151,12 @@
         "longitude": -58.3911
       },
       "transcript": "transcripts/basilica-del-pilar.txt",
-      "audio": "audio/basilica-del-pilar.m4a"
+      "audio": "audio/basilica-del-pilar.m4a",
+      "images": [
+        "images/basilica-del-pilar/white-basilica-and-recoleta-gardens.jpg",
+        "images/basilica-del-pilar/arched-nave-and-gilded-altar.jpg",
+        "images/basilica-del-pilar/colonial-interior-and-gilded-altars.jpg"
+      ]
     },
     {
       "id": "cueros-antilope",
@@ -119,7 +167,12 @@
         "longitude": -58.3793
       },
       "transcript": "transcripts/cueros-antilope.txt",
-      "audio": "audio/cueros-antilope.m4a"
+      "audio": "audio/cueros-antilope.m4a",
+      "images": [
+        "images/cueros-antilope/showroom-and-chandeliers.jpg",
+        "images/cueros-antilope/leather-coats-and-displays.jpg",
+        "images/cueros-antilope/red-and-black-leather-jackets.jpg"
+      ]
     },
     {
       "id": "rosedal-de-palermo",
@@ -130,7 +183,12 @@
         "longitude": -58.4166
       },
       "transcript": "transcripts/rosedal-de-palermo.txt",
-      "audio": "audio/rosedal-de-palermo.m4a"
+      "audio": "audio/rosedal-de-palermo.m4a",
+      "images": [
+        "images/rosedal-de-palermo/rose-beds-and-garden-paths.jpg",
+        "images/rosedal-de-palermo/pergola-roses-and-jacarandas.jpg",
+        "images/rosedal-de-palermo/andalusian-patio-and-tiles.jpg"
+      ]
     },
     {
       "id": "delta-del-tigre",
@@ -141,7 +199,13 @@
         "longitude": -58.5794
       },
       "transcript": "transcripts/delta-del-tigre.txt",
-      "audio": "audio/delta-del-tigre.m4a"
+      "audio": "audio/delta-del-tigre.m4a",
+      "images": [
+        "images/delta-del-tigre/wooden-river-buses.jpg",
+        "images/delta-del-tigre/riverfront-and-rowing-club.jpg",
+        "images/delta-del-tigre/delta-channel-and-island-docks.jpg",
+        "images/delta-del-tigre/boats-in-golden-light.jpg"
+      ]
     },
     {
       "id": "puerto-de-frutos",
@@ -152,7 +216,13 @@
         "longitude": -58.573
       },
       "transcript": "transcripts/puerto-de-frutos.txt",
-      "audio": "audio/puerto-de-frutos.m4a"
+      "audio": "audio/puerto-de-frutos.m4a",
+      "images": [
+        "images/puerto-de-frutos/market-shops-and-crafts.jpg",
+        "images/puerto-de-frutos/market-entrance.jpg",
+        "images/puerto-de-frutos/basket-maker-on-the-river.jpg",
+        "images/puerto-de-frutos/market-and-river-port.jpg"
+      ]
     }
   ]
 }
