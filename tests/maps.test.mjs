@@ -25,3 +25,22 @@ test('Apple and Google Maps preserve zero coordinates', () => {
   assert.equal(new URL(links.apple).searchParams.get('ll'), '0,0');
   assert.equal(new URL(links.googleWeb).searchParams.get('query'), '0,0');
 });
+
+test('Uber requests current-location pickup and the exact chapter destination', () => {
+  const url = new URL(mapLinks(location).uber);
+  assert.equal(url.origin, 'https://m.uber.com');
+  assert.equal(url.pathname, '/looking');
+  assert.equal(url.searchParams.get('pickup'), 'my_location');
+  assert.deepEqual(JSON.parse(url.searchParams.get('drop[0]')), {
+    latitude: 37.8031,
+    longitude: -122.3982,
+    addressLine1: 'Pier 7 & café',
+  });
+});
+
+test('Uber preserves zero destination coordinates', () => {
+  const url = new URL(mapLinks({ ...location, latitude: 0, longitude: 0 }).uber);
+  const destination = JSON.parse(url.searchParams.get('drop[0]'));
+  assert.equal(destination.latitude, 0);
+  assert.equal(destination.longitude, 0);
+});
