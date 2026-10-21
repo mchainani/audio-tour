@@ -33,7 +33,7 @@ export function ChapterPage() {
       {next ? <Link className="button primary" replace to={`/tours/${tour.id}/chapters/${next.id}`}>Next chapter<ArrowRight size={17} aria-hidden="true" /></Link> : <Link className="finish-link" to={`/tours/${tour.id}`}>Back to tour overview →</Link>}
     </nav>
     {chapter.audio && (hasTourAudio(tour.id, chapter.audio)
-      ? <Suspense fallback={null}><ChapterPlayer key={key} loadSource={() => loadTourAudio(tour.id, chapter.audio)} title={chapter.title} tourTitle={tour.title} /></Suspense>
+      ? <Suspense fallback={null}><ChapterPlayer key={key} loadSource={() => loadTourAudio(tour.id, chapter.audio)} title={chapter.title} tourTitle={tour.title} skipForwardSeconds={10} skipBackwardSeconds={10} /></Suspense>
       : <AudioUnavailable />)}
     <ChapterLocationPanel key={`location/${key}`} location={chapter.location} />
     <ChapterPhotos key={`photos/${key}`} images={images} locationName={chapter.location.name} />
