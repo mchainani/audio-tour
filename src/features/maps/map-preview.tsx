@@ -15,7 +15,15 @@ export interface MapStop {
   readonly number?: number;
 }
 
-export function MapPreview({ stops, label, overview = false, showRoute = false, fallbackMessage = 'Map unavailable. Check your connection or open Maps below.' }: { readonly stops: readonly MapStop[]; readonly label: string; readonly overview?: boolean; readonly showRoute?: boolean; readonly fallbackMessage?: string }) {
+interface MapPreviewProps {
+  readonly stops: readonly MapStop[];
+  readonly label: string;
+  readonly overview?: boolean;
+  readonly showRoute?: boolean;
+  readonly fallbackMessage?: string;
+}
+
+export function MapPreview({ stops, label, overview = false, showRoute = false, fallbackMessage = 'Map unavailable. Check your connection or open Maps below.' }: MapPreviewProps) {
   const container = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [attempt, setAttempt] = useState(0);

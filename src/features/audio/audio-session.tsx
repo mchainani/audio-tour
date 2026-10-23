@@ -1,10 +1,14 @@
-import { createContext, type PropsWithChildren, useContext, useEffect, useState, useSyncExternalStore } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState, useSyncExternalStore } from 'react';
 
 import { AudioPlayback } from './audio-playback';
 
+interface AudioSessionProviderProps {
+  children?: ReactNode;
+}
+
 const AudioSessionContext = createContext<AudioPlayback | null>(null);
 
-export function AudioSessionProvider({ children }: PropsWithChildren) {
+export function AudioSessionProvider({ children }: AudioSessionProviderProps) {
   const [player] = useState(() => new AudioPlayback());
   useEffect(() => () => player.reset(), [player]);
   return <AudioSessionContext.Provider value={player}>{children}</AudioSessionContext.Provider>;

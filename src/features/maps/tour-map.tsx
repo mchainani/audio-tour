@@ -4,7 +4,11 @@ import type { Tour } from '@/features/tours/types';
 
 import { MapPreview } from './map-preview';
 
-export function TourMap({ tour }: { readonly tour: Tour }) {
+interface TourMapProps {
+  readonly tour: Tour;
+}
+
+export function TourMap({ tour }: TourMapProps) {
   const stops = useMemo(() => tour.chapters.map((chapter, index) => ({
     location: chapter.location,
     label: `Chapter ${index + 1}: ${chapter.title}`,

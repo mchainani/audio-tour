@@ -6,12 +6,20 @@ import { AudioUnavailable } from './audio-unavailable';
 import { SeekSlider } from './seek-slider';
 import { SpeedSelector } from './speed-selector';
 
+interface ChapterPlayerProps {
+  readonly loadSource: () => string | null;
+  readonly title: string;
+  readonly tourTitle: string;
+  readonly skipForwardSeconds: number;
+  readonly skipBackwardSeconds: number;
+}
+
 function formatTime(seconds: number) {
   const wholeSeconds = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
   return `${Math.floor(wholeSeconds / 60)}:${String(wholeSeconds % 60).padStart(2, '0')}`;
 }
 
-export function ChapterPlayer({ loadSource, title, tourTitle, skipForwardSeconds, skipBackwardSeconds }: { readonly loadSource: () => string | null; readonly title: string; readonly tourTitle: string; readonly skipForwardSeconds: number; readonly skipBackwardSeconds: number }) {
+export function ChapterPlayer({ loadSource, title, tourTitle, skipForwardSeconds, skipBackwardSeconds }: ChapterPlayerProps) {
   const { player, state } = useAudioSession();
   useEffect(() => () => player.reset(), [player]);
 

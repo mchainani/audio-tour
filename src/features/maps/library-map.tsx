@@ -4,7 +4,11 @@ import type { Tour } from '@/features/tours/types';
 
 import { MapPreview } from './map-preview';
 
-export function LibraryMap({ tours }: { readonly tours: readonly Tour[] }) {
+interface LibraryMapProps {
+  readonly tours: readonly Tour[];
+}
+
+export function LibraryMap({ tours }: LibraryMapProps) {
   const stops = useMemo(() => tours.map((tour, index) => ({
     location: tour.location,
     label: `Tour ${index + 1}: ${tour.title}`,

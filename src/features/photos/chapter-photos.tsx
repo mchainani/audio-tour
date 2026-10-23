@@ -7,7 +7,12 @@ import { photoCarouselReducer } from './photo-carousel-state';
 
 import './chapter-photos.css';
 
-export function ChapterPhotos({ images, locationName }: { readonly images: readonly string[]; readonly locationName: string }) {
+interface ChapterPhotosProps {
+  readonly images: readonly string[];
+  readonly locationName: string;
+}
+
+export function ChapterPhotos({ images, locationName }: ChapterPhotosProps) {
   const [state, dispatch] = useReducer(photoCarouselReducer, { images, selected: 0 });
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
   const photos = state.images;

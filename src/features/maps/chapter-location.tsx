@@ -7,7 +7,11 @@ import type { ChapterLocation } from '@/features/tours/types';
 import { ChapterMap } from './chapter-map';
 import { mapLinks } from './map-links';
 
-export function ChapterLocationPanel({ location }: { readonly location: ChapterLocation }) {
+interface ChapterLocationPanelProps {
+  readonly location: ChapterLocation;
+}
+
+export function ChapterLocationPanel({ location }: ChapterLocationPanelProps) {
   const chooser = useRef<HTMLDialogElement>(null);
   const links = mapLinks(location);
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
