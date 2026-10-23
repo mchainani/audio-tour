@@ -13,7 +13,7 @@ export function TourMap({ tour }: { readonly tour: Tour }) {
   })), [tour.id, tour.chapters]);
 
   return <section className="tour-map-section" aria-labelledby="tour-map-heading">
-    <div><h2 id="tour-map-heading">Explore the stops.</h2><p className="muted small">Numbers match the chapters below. Select a pin, then follow its chapter link.</p></div>
-    <MapPreview stops={stops} label={`Chapter locations for ${tour.title}`} overview fallbackMessage="Map unavailable. Chapter locations are listed below." />
+    <div><h2 id="tour-map-heading">Explore the stops.</h2><p className="muted small">Numbers match the chapters below. The walking route follows streets and paths in chapter order. Select a pin, then follow its chapter link.</p></div>
+    <MapPreview stops={stops} label={`Chapter locations and walking route in chapter order for ${tour.title}`} overview showRoute fallbackMessage="Map unavailable. Chapter locations are listed below." />
   </section>;
 }

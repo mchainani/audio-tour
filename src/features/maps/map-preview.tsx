@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { MapLocation } from '@/features/tours/types';
 
+import { loadWalkingRoute } from './walking-route';
+
 import './chapter-map.css';
 
 export interface MapStop {
@@ -13,16 +15,18 @@ export interface MapStop {
   readonly number?: number;
 }
 
-export function MapPreview({ stops, label, overview = false, fallbackMessage = 'Map unavailable. Check your connection or open Maps below.' }: { readonly stops: readonly MapStop[]; readonly label: string; readonly overview?: boolean; readonly fallbackMessage?: string }) {
+export function MapPreview({ stops, label, overview = false, showRoute = false, fallbackMessage = 'Map unavailable. Check your connection or open Maps below.' }: { readonly stops: readonly MapStop[]; readonly label: string; readonly overview?: boolean; readonly showRoute?: boolean; readonly fallbackMessage?: string }) {
   const container = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [attempt, setAttempt] = useState(0);
+  const [routeState, setRouteState] = useState<'loading' | 'ready' | 'error'>('loading');
 
   useEffect(() => {
     let active = true;
     let map: LeafletMap | undefined;
     let observer: ResizeObserver | undefined;
     let tilesLoaded = 0;
+    const routeController = new AbortController();
     const timeout = setTimeout(() => {
       if (active && tilesLoaded === 0) setState('error');
     }, 12000);
@@ -30,7 +34,8 @@ export function MapPreview({ stops, label, overview = false, fallbackMessage = '
     import('leaflet').then((L) => {
       if (!active || !container.current || stops.length === 0) return;
       map = L.map(container.current, { scrollWheelZoom: false });
-      const bounds = L.latLngBounds(stops.map(({ location }) => [location.latitude, location.longitude]));
+      const coordinates = stops.map(({ location }): [number, number] => [location.latitude, location.longitude]);
+      const bounds = L.latLngBounds(coordinates);
       map.fitBounds(bounds, { padding: [36, 42], maxZoom: 16 });
       const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -44,6 +49,24 @@ export function MapPreview({ stops, label, overview = false, fallbackMessage = '
         if (active && tilesLoaded === 0) setState('error');
       });
       tiles.addTo(map);
+      if (showRoute && coordinates.length > 1) {
+        setRouteState('loading');
+        map.attributionControl.addAttribution('Routing: <a href="https://routing.openstreetmap.de/about.html">OSRM</a> · <a href="https://www.openstreetmap.org/fixthemap">Fix the map</a>');
+        void loadWalkingRoute(stops.map(({ location }) => location), routeController.signal).then((route) => {
+          if (!active || !map) return;
+          const line = L.polyline(route, {
+            color: '#244f3d',
+            weight: 4,
+            opacity: 0.85,
+            interactive: false,
+          }).addTo(map);
+          bounds.extend(line.getBounds());
+          map.fitBounds(bounds, { padding: [36, 42], maxZoom: 16 });
+          setRouteState('ready');
+        }).catch(() => {
+          if (active) setRouteState('error');
+        });
+      }
       for (const stop of stops) {
         const pin = document.createElement('span');
         pin.setAttribute('aria-hidden', 'true');
@@ -89,16 +112,20 @@ export function MapPreview({ stops, label, overview = false, fallbackMessage = '
 
     return () => {
       active = false;
+      routeController.abort();
       clearTimeout(timeout);
       observer?.disconnect();
       map?.remove();
     };
-  }, [stops, attempt, overview]);
+  }, [stops, attempt, overview, showRoute]);
 
   return <div className={`chapter-map-frame${overview ? ' tour-map-frame' : ''}`}>
     <div ref={container} className="chapter-map-canvas" role="region" aria-label={label} />
     {state !== 'ready' && <div className="chapter-map-status" role="status">
       {state === 'loading' ? 'Loading map…' : <>{fallbackMessage} <button type="button" onClick={() => { setState('loading'); setAttempt((value) => value + 1); }}>Retry map</button></>}
+    </div>}
+    {state === 'ready' && showRoute && stops.length > 1 && routeState !== 'ready' && <div className="chapter-map-status" role="status">
+      {routeState === 'loading' ? 'Loading walking route…' : <>Walking route unavailable. You can still explore the chapter pins. <button type="button" onClick={() => { setRouteState('loading'); setState('loading'); setAttempt((value) => value + 1); }}>Retry route</button></>}
     </div>}
   </div>;
 }
