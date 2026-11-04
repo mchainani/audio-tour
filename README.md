@@ -50,6 +50,18 @@ See [audio behavior](docs/audio-playback.md) and [map behavior](docs/maps-and-sp
 | `npm run generate:audio` | Regenerate configured chapter narration and tour ZIPs on macOS; skip chapters without audio paths |
 | `npm run generate:audio -- new-york-city` | Regenerate only the New York tour |
 
+## Continuous integration
+
+[GitHub Actions CI](.github/workflows/ci.yml) installs the exact dependencies from `package-lock.json` with `npm ci`, using the Node.js version in `.nvmrc`. It runs `npm audit` for production and development dependencies, ESLint with warnings treated as failures, TypeScript verification, every test in `tests/*.test.mjs` (including Vite catalog integration and audio range handling), and a full production build. Successful runs retain `dist/` as a downloadable artifact for seven days.
+
+CI runs on every pull request and subsequent update, every push to `master`, merge-queue validation, manual dispatch, and Mondays at 13:17 UTC. Pull requests have no path filters, so changes to tour content, assets, dependencies, and CI itself receive the same checks. New updates cancel older CI runs for the same pull request. The weekly run checks that the locked dependencies still install and build on the current runner.
+
+The `Verify` check is required by branch protection for `master`, including for administrators, and branches must be current before merging. CI validates and packages the site; production deployment remains a separate operation. Narration generation is an explicit publishing task requiring macOS tools and an external speech service, so CI uses the committed recordings.
+
+The `minimatch` override in `package.json` selects version 11.0.1 or later to fix [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249). ESLint and TypeScript ESLint still request version 10; remove the override once their dependency ranges include the patched release.
+
+Recommended follow-ups are Dependabot updates for npm and GitHub Actions, CodeQL and secret scanning, and browser tests in Chromium and WebKit covering navigation, playback, seeking, and keyboard accessibility. Add deployment smoke tests for direct chapter URLs and audio byte-range responses against a Cloudflare preview before publishing. Keep real iPhone checks for background playback and lock-screen controls, since desktop browser tests cannot fully verify those behaviors.
+
 ## Project structure
 
 ```text

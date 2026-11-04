@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  merge_group:
+  workflow_dispatch:
+  schedule:
+    # Exercise the locked dependencies and runner every Monday at 13:17 UTC.
+    - cron: '17 13 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit
+
+      - name: Lint (including warnings)
+        run: npm run lint -- --max-warnings 0
+
+      - name: Verify TypeScript
+        run: npm run typecheck
+
+      - name: Run all tests
+        run: npm test
+
+      - name: Build production site
+        run: npm run build
+
+      - name: Upload production build
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: production-site-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
